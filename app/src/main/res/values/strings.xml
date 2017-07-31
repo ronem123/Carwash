@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">CarWash</string>
+    <string name="create_account">create account</string>
+    <string name="full_name">Full Name</string>
+    <string name="address">Enter Address</string>
+    <string name="password">******</string>
+    <string name="contact">Contact Number</string>
 </resources>
