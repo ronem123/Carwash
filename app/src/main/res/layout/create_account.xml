@@ -43,10 +43,10 @@
 
             <EditText
                 android:id="@+id/edt_email"
-                android:inputType="textEmailAddress"
                 style="@style/edit_text_style"
                 android:drawableLeft="@mipmap/ic_mail_outline_black_24dp"
-                android:hint="@string/email" />
+                android:hint="@string/email"
+                android:inputType="textEmailAddress" />
 
             <EditText
                 android:id="@+id/edt_password"
@@ -66,19 +66,16 @@
                 android:id="@+id/edt_contact"
                 style="@style/edit_text_style"
                 android:drawableLeft="@mipmap/ic_stay_current_portrait_black_24dp"
+                android:layout_marginBottom="10dp"
                 android:hint="@string/contact" />
 
             <Button
                 android:id="@+id/btn_create_account"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/login_selector"
-                android:gravity="center"
-                android:text="@string/join"
-                android:textAllCaps="true"
-                android:textColor="@color/color_white"
-                android:textSize="20sp" />
+                style="@style/event_button.CreateAccount" />
+
+            <Button
+                android:id="@+id/btn_already_member"
+                style="@style/event_button.HaveAccount" />
         </LinearLayout>
     </ScrollView>
 

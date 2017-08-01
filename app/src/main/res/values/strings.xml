@@ -10,4 +10,6 @@
     <string name="join">Join</string>
     <string name="login">login</string>
     <string name="btn_login">Log in</string>
+    <string name="already_member">Already Member</string>
+    <string name="new_member">New To Carwash</string>
 </resources>
