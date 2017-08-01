@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "916797489622",
+    "firebase_url": "https://car-wash-175506.firebaseio.com",
+    "project_id": "car-wash-175506",
+    "storage_bucket": "car-wash-175506.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916797489622:android:3832a187b04c598f",
+        "android_client_info": {
+          "package_name": "com.ronem.carwash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "916797489622-6ot2ja2ircvnqg7vr465h5fdn0mth1l7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYyB4Zlog-0t56UIqTBIaWVD8rou_3Yk4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

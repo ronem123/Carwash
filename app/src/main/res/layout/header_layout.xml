@@ -14,20 +14,26 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/_5sdp"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/_5sdp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/user_name"
             style="@style/nav_info_text"
-            android:textSize="@dimen/_18sdp"
-            android:text="@string/user_name" />
+            android:drawableLeft="@mipmap/ic_person_black_24dp"
+            android:drawablePadding="@dimen/_10sdp"
+            android:drawableTint="@color/color_white"
+            android:text="@string/user_name"
+            android:textSize="@dimen/_18sdp" />
 
         <TextView
             android:id="@+id/user_contact"
             style="@style/nav_info_text"
             android:layout_marginTop="@dimen/_5sdp"
+            android:drawableLeft="@mipmap/ic_stay_current_portrait_black_24dp"
+            android:drawablePadding="@dimen/_10sdp"
+            android:drawableTint="@color/color_white"
             android:text="@string/user_contact" />
 
     </LinearLayout>
