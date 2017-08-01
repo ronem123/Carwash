@@ -110,6 +110,8 @@ public class LoginRegisterActivity extends AppCompatActivity {
             requestPermissions(new String[]{
                     android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION
             }, PERMISSION_REQUEST_CODE);
+        }else{
+            launchDashboard();
         }
     }
 

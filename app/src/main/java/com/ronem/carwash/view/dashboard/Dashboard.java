@@ -190,11 +190,11 @@ public class Dashboard extends AppCompatActivity
 
 
         //showing the destination marker
-        LatLng latLng = new LatLng(adv.getLatitude(), adv.getLongitude());
+        LatLng latLng = new LatLng(27.618446,85.2950541);
         googleMap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .title(adv.getAdType())
-                .snippet(adv.getTitle()));
+                .title("title")
+                .snippet("detail"));
     }
     @SuppressWarnings("MissingPermission")
     private void requestLocationupdate() {
