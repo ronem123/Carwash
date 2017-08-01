@@ -3,6 +3,11 @@
     <string name="create_account">create account</string>
     <string name="full_name">Full Name</string>
     <string name="address">Enter Address</string>
-    <string name="password">******</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
     <string name="contact">Contact Number</string>
+    <string name="email">Email</string>
+    <string name="join">Join</string>
+    <string name="login">login</string>
+    <string name="btn_login">Log in</string>
 </resources>

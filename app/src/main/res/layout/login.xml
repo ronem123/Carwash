@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/login_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.ronem.carwash.view.ChosenTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:text="@string/login"
+        android:textAllCaps="true"
+        android:textColor="@color/color_white"
+        android:textSize="35sp"
+        android:textStyle="bold" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/ic_person_add_white_48dp" />
+
+
+            <EditText
+                android:id="@+id/edt_login_email"
+                android:inputType="textEmailAddress"
+                style="@style/edit_text_style"
+                android:drawableLeft="@mipmap/ic_mail_outline_black_24dp"
+                android:hint="@string/email" />
+
+            <EditText
+                android:id="@+id/edt_login_password"
+                style="@style/edit_text_style"
+                android:drawableLeft="@mipmap/ic_star_black_24dp"
+                android:hint="@string/password"
+                android:inputType="textPassword" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="20dp"
+                android:id="@+id/btn_login"
+                android:background="@drawable/sign_up_selector"
+                android:gravity="center"
+                android:text="@string/btn_login"
+                android:textAllCaps="true"
+                android:textColor="@color/color_white"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

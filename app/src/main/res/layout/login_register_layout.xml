@@ -6,62 +6,7 @@
     android:orientation="vertical"
     android:padding="10dp">
 
-    <com.ronem.carwash.view.ChosenTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:text="@string/create_account"
-        android:textAllCaps="true"
-        android:textColor="@color/color_white"
-        android:textSize="35sp"
-        android:textStyle="bold" />
+    <include layout="@layout/create_account" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:orientation="vertical">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@mipmap/ic_person_add_white_48dp" />
-
-            <EditText
-                android:id="@+id/edt_full_name"
-                style="@style/edit_text_style"
-                android:drawableLeft="@mipmap/ic_person_black_24dp"
-                android:hint="@string/full_name" />
-
-            <EditText
-                android:id="@+id/edt_address"
-                style="@style/edit_text_style"
-                android:drawableLeft="@mipmap/ic_person_black_24dp"
-                android:hint="@string/address" />
-            <EditText
-                android:id="@+id/edt_password"
-                style="@style/edit_text_style"
-                android:inputType="textPassword"
-                android:drawableLeft="@mipmap/ic_star_black_24dp"
-                android:hint="@string/password" />
-            <EditText
-                android:id="@+id/edt_confirm_password"
-                style="@style/edit_text_style"
-                android:inputType="textPassword"
-                android:drawableLeft="@mipmap/ic_person_black_24dp"
-                android:hint="@string/password" />
-            <EditText
-                android:id="@+id/edt_contact"
-                style="@style/edit_text_style"
-                android:drawableLeft="@mipmap/ic_person_black_24dp"
-                android:hint="@string/contact" />
-        </LinearLayout>
-    </ScrollView>
+    <include layout="@layout/login" />
 </LinearLayout>
