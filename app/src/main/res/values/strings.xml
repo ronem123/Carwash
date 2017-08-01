@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">CarWash</string>
+    <string name="create_account">create account</string>
+    <string name="full_name">Full Name</string>
+    <string name="address">Enter Address</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="contact">Contact Number</string>
+    <string name="email">Email</string>
+    <string name="join">Join</string>
+    <string name="login">login</string>
+    <string name="btn_login">Log in</string>
+    <string name="already_member">Already Member</string>
+    <string name="new_member">New To Carwash</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="user_name">Ram Mandal</string>
+    <string name="user_contact">+977-9808065961</string>
+
 </resources>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/create_account_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.ronem.carwash.view.ChosenTextView
+        style="@style/head_title"
+        android:text="@string/create_account" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/_10sdp"
+            android:paddingRight="@dimen/_10sdp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/ic_person_add_white_48dp" />
+
+            <EditText
+                android:id="@+id/edt_full_name"
+                style="@style/edit_text_style"
+                android:drawableLeft="@mipmap/ic_person_black_24dp"
+                android:hint="@string/full_name" />
+
+            <EditText
+                android:id="@+id/edt_email"
+                style="@style/edit_text_style"
+                android:drawableLeft="@mipmap/ic_mail_outline_black_24dp"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/edt_password"
+                style="@style/edit_text_style"
+                android:drawableLeft="@mipmap/ic_star_black_24dp"
+                android:hint="@string/password"
+                android:inputType="textPassword" />
+
+            <EditText
+                android:id="@+id/edt_confirm_password"
+                style="@style/edit_text_style"
+                android:drawableLeft="@mipmap/ic_star_black_24dp"
+                android:hint="@string/confirm_password"
+                android:inputType="textPassword" />
+
+            <EditText
+                android:id="@+id/edt_contact"
+                style="@style/edit_text_style"
+                android:drawableLeft="@mipmap/ic_stay_current_portrait_black_24dp"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:hint="@string/contact" />
+
+            <Button
+                android:id="@+id/btn_create_account"
+                style="@style/event_button.CreateAccount" />
+
+            <Button
+                android:id="@+id/btn_already_member"
+                style="@style/event_button.HaveAccount"
+                android:layout_marginBottom="@dimen/_8sdp"/>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
