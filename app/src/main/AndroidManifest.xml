@@ -32,7 +32,7 @@
             android:name=".view.LoginRegisterActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.Dashboard"
+            android:name=".view.dashboard.Dashboard"
             android:screenOrientation="portrait" />
     </application>
 

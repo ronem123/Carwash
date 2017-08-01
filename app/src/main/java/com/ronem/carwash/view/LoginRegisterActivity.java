@@ -1,14 +1,17 @@
 package com.ronem.carwash.view;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -16,6 +19,7 @@ import android.widget.Toast;
 import com.ronem.carwash.R;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.SessionManager;
+import com.ronem.carwash.view.dashboard.Dashboard;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -48,6 +52,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
     EditText edtLoginPassword;
 
     private SessionManager sessionManager;
+    private final int PERMISSION_REQUEST_CODE = 100;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,8 +68,8 @@ public class LoginRegisterActivity extends AppCompatActivity {
 //        if (sessionManager.isLoggedIn()) {
 //            launchDashboard();
 //        } else {
-            loginLayout.setVisibility(View.VISIBLE);
-            createAccLayout.setVisibility(View.GONE);
+        loginLayout.setVisibility(View.VISIBLE);
+        createAccLayout.setVisibility(View.GONE);
 //        }
     }
 
@@ -92,8 +97,30 @@ public class LoginRegisterActivity extends AppCompatActivity {
             showMessage(MetaData.MSG_PASSWORD_NOT_MATCHED);
         } else {
             sessionManager.setLogin(fullName, email, password, contact);
-            launchDashboard();
+
+//            launchDashboard();
+            checkRunTimePermissionLaunchDashboard();
         }
+    }
+
+    private void checkRunTimePermissionLaunchDashboard() {
+        if (Build.VERSION.SDK_INT >= 23
+                && ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{
+                    android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION
+            }, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            launchDashboard();
+        } else {
+            checkRunTimePermissionLaunchDashboard();
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @OnClick(R.id.btn_login)
