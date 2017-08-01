@@ -75,7 +75,8 @@
 
             <Button
                 android:id="@+id/btn_already_member"
-                style="@style/event_button.HaveAccount" />
+                style="@style/event_button.HaveAccount"
+                android:layout_marginBottom="10dp"/>
         </LinearLayout>
     </ScrollView>
 

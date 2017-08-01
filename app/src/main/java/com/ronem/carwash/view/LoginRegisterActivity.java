@@ -1,5 +1,6 @@
 package com.ronem.carwash.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -55,7 +56,9 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
         if (sessionManager.isLoggedIn()) {
-
+            Intent i = new Intent(this, Dashboard.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
         } else {
             loginLayout.setVisibility(View.VISIBLE);
             createAccLayout.setVisibility(View.GONE);
