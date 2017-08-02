@@ -13,8 +13,8 @@
 
         <com.ronem.carwash.view.CircleImageView
             android:id="@+id/car_washer_pic"
-            android:layout_width="@dimen/_60sdp"
-            android:layout_height="@dimen/_60sdp"
+            android:layout_width="@dimen/_55sdp"
+            android:layout_height="@dimen/_55sdp"
             android:padding="@dimen/_2sdp"
             android:src="@drawable/pic" />
 
@@ -30,6 +30,7 @@
                 style="@style/dialog_title_text"
                 android:drawableLeft="@mipmap/ic_directions_car_white_24dp"
                 android:drawablePadding="@dimen/_5sdp"
+                android:gravity="center"
                 android:text="@string/car_no" />
 
             <TextView
@@ -37,6 +38,7 @@
                 style="@style/dialog_title_text"
                 android:drawableLeft="@mipmap/ic_account_circle_white_24dp"
                 android:drawablePadding="@dimen/_5sdp"
+                android:gravity="center"
                 android:text="@string/car_washer" />
         </LinearLayout>
 
@@ -51,7 +53,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/_5sdp">
+        android:background="@drawable/bot_corner_white"
+        android:paddingBottom="@dimen/_15sdp"
+        android:paddingLeft="@dimen/_5sdp"
+        android:paddingRight="@dimen/_5sdp"
+        android:paddingTop="@dimen/_15sdp">
+
 
         <com.ronem.carwash.view.ChosenTextView
             android:id="@+id/distance"
@@ -62,12 +69,82 @@
             android:textSize="@dimen/_12sdp"
             android:textStyle="bold" />
 
-        <ImageView
+        <LinearLayout
             android:id="@+id/access_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:orientation="horizontal">
 
-            android:src="@mipmap/ic_access_time_black_24dp"
-            android:tint="@color/color_orange" />
+            <TextView
+                android:id="@+id/time_to_reach"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_to_reach"
+                android:textColor="@color/color_orange"
+                android:textSize="@dimen/_14sdp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_access_time_black_24dp"
+                android:tint="@color/color_orange" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/access_time"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/time_to_reach_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time_to_reach_location"
+                android:textColor="@color/color_grey"
+                android:textSize="@dimen/_14sdp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_location_on_white_24dp"
+                android:tint="@color/color_grey" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/location"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/_10sdp">
+
+            <Button
+                android:id="@+id/dialog_btn_show_more"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginRight="@dimen/_7sdp"
+                android:layout_weight="1"
+                android:background="@drawable/corner_btn_selector"
+                android:text="@string/show_more"
+                android:textColor="@color/color_white" />
+
+            <Button
+                android:id="@+id/dialog_btn_close"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginLeft="@dimen/_7sdp"
+                android:layout_weight="1"
+                android:background="@drawable/corner_btn_selector"
+                android:text="@string/close"
+                android:textColor="@color/color_white" />
+        </LinearLayout>
     </RelativeLayout>
+
 </LinearLayout>

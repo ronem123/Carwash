@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#00000000"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/_20sdp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_40sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/car_no"
+                    style="@style/show_more_user"
+                    android:drawableLeft="@mipmap/ic_directions_car_white_24dp"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:drawableTint="@color/colorPrimary"
+                    android:gravity="center"
+                    android:text="@string/car_no" />
+
+                <TextView
+                    android:id="@+id/car_washer_name"
+                    style="@style/show_more_user"
+                    android:drawableLeft="@mipmap/ic_account_circle_white_24dp"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:drawableTint="@color/colorPrimary"
+                    android:gravity="center"
+                    android:text="@string/car_washer" />
+
+                <TextView
+                    android:id="@+id/car_washer_contact"
+                    style="@style/show_more_user"
+                    android:drawableLeft="@mipmap/ic_call_white_24dp"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:drawableTint="@color/colorPrimary"
+                    android:gravity="center"
+                    android:text="@string/car_washer_contact" />
+
+                <RatingBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:numStars="5"
+                    android:scaleX="0.5"
+                    android:scaleY="0.5"
+                    android:stepSize="1.0"
+                    android:transformPivotX="0dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/_5sdp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/show_more_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/duration"
+                    android:textColor="@color/color_orange"
+                    android:textSize="@dimen/_18sdp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/_5sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:src="@mipmap/ic_access_time_black_24dp"
+                    android:tint="@color/color_orange" />
+
+                <TextView
+                    android:id="@+id/show_more_estimation_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/estimation_time"
+                    android:textColor="@color/color_orange"
+                    android:textSize="@dimen/_14sdp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+    <com.ronem.carwash.view.CircleImageView
+        android:id="@+id/car_washer_pic"
+        android:layout_width="@dimen/_55sdp"
+        android:layout_height="@dimen/_55sdp"
+        android:layout_marginLeft="@dimen/_45sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:padding="@dimen/_2sdp"
+        android:src="@drawable/pic" />
+</RelativeLayout>

@@ -23,4 +23,19 @@
     <string name="car_washer">Mohammad Alsead</string>
     <string name="car_washer_address">Saudi Arab</string>
     <string name="duration">0.8 KM</string>
+    <string name="time_to_reach">Time to reach 10</string>
+    <string name="time_to_reach_location">Hakim lbn Harith, Al Mohammadiyah, Riyadh</string>
+    <string name="show_more">Show more</string>
+    <string name="close">Close</string>
+    <string name="estimation_time">Estimation time</string>
+    <string name="car_washer_contact">05399967983</string>
+    <string name="car_type">Car Type</string>
+    <string name="washer_address">Address</string>
+    <string name="payment_method">Payment method</string>
+    <string name="credit_card">Credit</string>
+    <string name="payment_monthly">Monthly Payments</string>
+    <string name="payment_coupon">Coupon</string>
+    <string name="cash_payment">Cash Payment</string>
+    <string name="make_payment">make Payment</string>
+    <string name="price">35SR</string>
 </resources>

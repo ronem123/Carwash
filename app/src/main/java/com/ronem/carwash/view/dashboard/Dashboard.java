@@ -55,6 +55,7 @@ import com.ronem.carwash.utils.ItemDividerDecoration;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.RecyclerItemClickListener;
 import com.ronem.carwash.utils.SessionManager;
+import com.ronem.carwash.view.MyDialog;
 
 import java.util.List;
 
@@ -285,7 +286,8 @@ public class Dashboard extends AppCompatActivity
             public boolean onMarkerClick(Marker marker) {
                 Integer tag = (Integer) marker.getTag();
                 if (tag != -1) {
-                    Toast.makeText(getApplicationContext(), String.valueOf((Integer) marker.getTag()), Toast.LENGTH_SHORT).show();
+                    MyDialog d = new MyDialog(Dashboard.this, 1);
+                    d.show();
                 }
                 return true;
             }
