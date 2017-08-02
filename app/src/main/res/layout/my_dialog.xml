@@ -80,7 +80,7 @@
                 android:id="@+id/time_to_reach"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/time_to_reach"
+                android:text="@string/estimation_time"
                 android:textColor="@color/color_orange"
                 android:textSize="@dimen/_14sdp"
                 android:textStyle="bold" />

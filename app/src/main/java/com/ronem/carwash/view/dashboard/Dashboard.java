@@ -2,6 +2,7 @@ package com.ronem.carwash.view.dashboard;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -41,6 +42,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Dash;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -56,6 +58,7 @@ import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.RecyclerItemClickListener;
 import com.ronem.carwash.utils.SessionManager;
 import com.ronem.carwash.view.MyDialog;
+import com.ronem.carwash.view.order.OrderActivity;
 
 import java.util.List;
 
@@ -177,7 +180,11 @@ public class Dashboard extends AppCompatActivity
 
     @Override
     public void onItemClick(RecyclerView recyclerView, View view, int position) {
-        Toast.makeText(getApplicationContext(), items[position].getTitle(), Toast.LENGTH_SHORT).show();
+        switch (position) {
+            case 0:
+                startActivity(new Intent(Dashboard.this, OrderActivity.class));
+                break;
+        }
     }
 
     @Override
@@ -324,7 +331,8 @@ public class Dashboard extends AppCompatActivity
     @Override
     protected void onPause() {
         super.onPause();
-        LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+        if (googleApiClient.isConnected())
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
     }
 
     @Override

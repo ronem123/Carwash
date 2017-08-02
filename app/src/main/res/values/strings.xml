@@ -27,7 +27,7 @@
     <string name="time_to_reach_location">Hakim lbn Harith, Al Mohammadiyah, Riyadh</string>
     <string name="show_more">Show more</string>
     <string name="close">Close</string>
-    <string name="estimation_time">Estimation time</string>
+    <string name="estimation_time">Estimation time 10</string>
     <string name="car_washer_contact">05399967983</string>
     <string name="car_type">Car Type</string>
     <string name="washer_address">Address</string>
@@ -38,4 +38,7 @@
     <string name="cash_payment">Cash Payment</string>
     <string name="make_payment">make Payment</string>
     <string name="price">35SR</string>
+    <string name="time">PM15:25 25/08/17</string>
+    <string name="small">Vehicle Type : Small</string>
+    <string name="text">text</string>
 </resources>
