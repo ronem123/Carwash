@@ -65,12 +65,12 @@ public class LoginRegisterActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         sessionManager = new SessionManager(this);
-//        if (sessionManager.isLoggedIn()) {
-//            launchDashboard();
-//        } else {
+        if (sessionManager.isLoggedIn()) {
+            launchDashboard();
+        } else {
         loginLayout.setVisibility(View.VISIBLE);
         createAccLayout.setVisibility(View.GONE);
-//        }
+        }
     }
 
     @Override

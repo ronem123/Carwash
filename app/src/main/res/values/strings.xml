@@ -19,4 +19,8 @@
     <string name="user_contact">+977-9808065961</string>
 
     <string name="my_google_api_key" templateMergeStrategy="preserve" translatable="false">AIzaSyAp84KAuNDyBeb0QIklmV9UMQ6Zc1xEhhg</string>
+    <string name="car_no">No 13</string>
+    <string name="car_washer">Mohammad Alsead</string>
+    <string name="car_washer_address">Saudi Arab</string>
+    <string name="duration">0.8 KM</string>
 </resources>

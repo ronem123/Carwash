@@ -76,4 +76,8 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="dialog_title_text" parent="nav_info_text">
+        <item name="android:textSize">@dimen/_12sdp</item>
+    </style>
+
 </resources>

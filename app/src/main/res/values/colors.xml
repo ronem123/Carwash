@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#0085FE</color>
+    <color name="colorPrimary">#0084F8</color>
     <color name="colorPrimaryDark">#005aac</color>
     <color name="colorAccent">#37a0ff</color>
 
@@ -11,4 +11,6 @@
     <color name="color_login">#d6544b</color>
     <color name="color_sign_up">#ff9273</color>
     <color name="transparent">#00000000</color>
+    <color name="color_green">#399b39</color>
+    <color name="color_orange">#e1903d</color>
 </resources>
