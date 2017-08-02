@@ -22,7 +22,8 @@ public class MetaData {
 
     public static NavItem[] getnavItems() {
         NavItem[] items = new NavItem[]{
-                new NavItem(R.mipmap.ic_launcher, "Orders")
+                new NavItem(R.mipmap.ic_add_shopping_cart_white_24dp, "My Orders"),
+                new NavItem(R.mipmap.ic_power_settings_new_white_24dp, "Log out")
         };
 
         return items;

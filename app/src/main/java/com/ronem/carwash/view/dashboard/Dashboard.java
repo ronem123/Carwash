@@ -57,6 +57,8 @@ import com.ronem.carwash.utils.ItemDividerDecoration;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.RecyclerItemClickListener;
 import com.ronem.carwash.utils.SessionManager;
+import com.ronem.carwash.view.CarwashSplash;
+import com.ronem.carwash.view.LoginRegisterActivity;
 import com.ronem.carwash.view.MyDialog;
 import com.ronem.carwash.view.order.OrderActivity;
 
@@ -183,6 +185,12 @@ public class Dashboard extends AppCompatActivity
         switch (position) {
             case 0:
                 startActivity(new Intent(Dashboard.this, OrderActivity.class));
+                break;
+            case 1:
+                sessionManager.logOut();
+                Intent i = new Intent(Dashboard.this, LoginRegisterActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
                 break;
         }
     }
@@ -392,5 +400,10 @@ public class Dashboard extends AppCompatActivity
             drawable.draw(canvas);
         customMarkerView.draw(canvas);
         return returnedBitmap;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 }

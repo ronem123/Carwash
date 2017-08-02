@@ -50,4 +50,14 @@ public class SessionManager {
     public boolean isLoggedIn() {
         return sharedPreferences.getBoolean(IS_LOGIN, false);
     }
+
+    public void logOut() {
+        editor = sharedPreferences.edit();
+        editor.putString(KEY_FULL_NAME, "");
+        editor.putString(KEY_EMAIL, "");
+        editor.putString(KEY_PASSWORD, "");
+        editor.putString(KEY_CONTACT, "");
+        editor.putBoolean(IS_LOGIN, false);
+        editor.apply();
+    }
 }
