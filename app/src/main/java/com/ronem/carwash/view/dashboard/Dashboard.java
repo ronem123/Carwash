@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,14 +29,19 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.ronem.carwash.R;
 import com.ronem.carwash.adapters.NavAdapter;
+import com.ronem.carwash.model.CarWashLocation;
 import com.ronem.carwash.model.NavItem;
 import com.ronem.carwash.utils.BasicUtilityMethods;
+import com.ronem.carwash.utils.DistanceCalculator;
 import com.ronem.carwash.utils.ItemDividerDecoration;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.RecyclerItemClickListener;
 import com.ronem.carwash.utils.SessionManager;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -49,7 +55,8 @@ public class Dashboard extends AppCompatActivity
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        com.google.android.gms.location.LocationListener {
+        com.google.android.gms.location.LocationListener,
+        DirectionAdView {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -65,6 +72,8 @@ public class Dashboard extends AppCompatActivity
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
     private GoogleMap googleMap;
+    private List<CarWashLocation> carWashLocations;
+    private DirectionPresenter presenter;
 
 
     @Override
@@ -76,7 +85,11 @@ public class Dashboard extends AppCompatActivity
         settingToolbar();
         setUpNavigationMenu();
 
+        presenter = new DirectionPresenterImpl();
+        presenter.onAddDirectionView(this);
         BasicUtilityMethods.checkifGPSisEnabled(this);
+        carWashLocations = MetaData.getLocations();
+
         createGoogleApiClient();
         googleApiClient.connect();
 
@@ -167,14 +180,57 @@ public class Dashboard extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
+        double shortDistance = 0;
+        CarWashLocation nearLocation = null;
+        LatLng myLatLang = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng destinationLatLang;
 
+        for (int i = 0; i < carWashLocations.size(); i++) {
+            CarWashLocation c = carWashLocations.get(i);
+
+            double actualDistance = DistanceCalculator.getDistance(location.getLatitude(), location.getLongitude(),
+                    c.getLatitude(), c.getLongitude(), "K");
+
+            if (i == 0) {
+                shortDistance = actualDistance;
+                nearLocation = c;
+            } else {
+                if (actualDistance < shortDistance) {
+                    shortDistance = actualDistance;
+                    nearLocation = c;
+                }
+            }
+            Log.i("Distance", String.valueOf(actualDistance));
+        }
+        Log.i("ShortestDistance", String.valueOf(shortDistance));
+
+        destinationLatLang = new LatLng(nearLocation.getLatitude(), nearLocation.getLongitude());
+        //url for the data between origin and destination
+        String url = BasicUtilityMethods.getUrl(myLatLang, destinationLatLang);
+
+        if (BasicUtilityMethods.isNetworkOnline(this)) {
+            presenter.onGetPolyLineOptions(url);
+        } else {
+            Toast.makeText(getApplicationContext(), "Please enable your internet connection", Toast.LENGTH_SHORT).show();
+        }
+
+        //current location
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(myLatLang));
+
+        //showing the destination marker
+        MarkerOptions markerOption = new MarkerOptions()
+                .position(destinationLatLang)
+                .title(nearLocation.getTitle())
+                .snippet(nearLocation.getAddress());
+
+        googleMap.addMarker(markerOption);
+        Log.i("location:", nearLocation.getLatitude() + "\n" + nearLocation.getLongitude());
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
 
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -186,20 +242,18 @@ public class Dashboard extends AppCompatActivity
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+
         googleMap.setMyLocationEnabled(true);
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
 
 
-        //showing the destination marker
-        LatLng latLng = new LatLng(27.618446,85.2950541);
-        googleMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .title("title")
-                .snippet("detail"));
     }
+
     @SuppressWarnings("MissingPermission")
     private void requestLocationupdate() {
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -224,5 +278,10 @@ public class Dashboard extends AppCompatActivity
     protected void onPause() {
         super.onPause();
         LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+    }
+
+    @Override
+    public void onPolyLineOptionReceived(PolylineOptions polylineOptions) {
+        googleMap.addPolyline(polylineOptions);
     }
 }

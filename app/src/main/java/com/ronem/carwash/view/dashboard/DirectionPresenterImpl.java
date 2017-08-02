@@ -86,8 +86,8 @@ public class DirectionPresenterImpl implements DirectionPresenter {
 
                 // Adding all the points in the route to LineOptions
                 lineOptions.addAll(points);
-                lineOptions.width(8);
-                lineOptions.color(Color.BLUE);
+                lineOptions.width(4);
+                lineOptions.color(Color.GREEN);
 
 
             }
