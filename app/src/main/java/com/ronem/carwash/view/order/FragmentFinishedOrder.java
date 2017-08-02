@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ronem.carwash.R;
+import com.ronem.carwash.adapters.FinishedAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +29,7 @@ public class FragmentFinishedOrder extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.single_row_finished_order_layout, container, false);
+        View v = inflater.inflate(R.layout.fragment_finished_layout, container, false);
         ButterKnife.bind(this, v);
         return v;
     }
@@ -42,6 +43,6 @@ public class FragmentFinishedOrder extends Fragment {
         for (int i = 0; i < 10; i++) {
             l.add("completed" + i);
         }
-        recyclerView.setAdapter();
+        recyclerView.setAdapter(new FinishedAdapter(l));
     }
 }

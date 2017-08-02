@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.ronem.carwash.view.order.FragmentFinishedOrder;
 import com.ronem.carwash.view.order.FragmentLiveOrder;
 
 /**
@@ -23,7 +24,7 @@ public class OderFragmentPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return new FragmentLiveOrder();
             case 1:
-                return new FragmentLiveOrder();
+                return new FragmentFinishedOrder();
         }
         return null;
     }
