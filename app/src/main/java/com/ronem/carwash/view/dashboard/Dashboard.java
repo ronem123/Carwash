@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -60,6 +61,7 @@ import com.ronem.carwash.utils.SessionManager;
 import com.ronem.carwash.view.CarwashSplash;
 import com.ronem.carwash.view.LoginRegisterActivity;
 import com.ronem.carwash.view.MyDialog;
+import com.ronem.carwash.view.editprofile.EditProfileActivity;
 import com.ronem.carwash.view.order.OrderActivity;
 
 import java.util.List;
@@ -86,6 +88,9 @@ public class Dashboard extends AppCompatActivity
     DrawerLayout drawerLayout;
     @Bind(R.id.nav_view)
     NavigationView navigationView;
+
+    private TextView emailTv;
+    private TextView contactTv;
 
     private NavItem[] items;
     private SessionManager sessionManager;
@@ -157,15 +162,8 @@ public class Dashboard extends AppCompatActivity
         drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
-        /**
-         * setting user info to the navigation header layout when login successful
-         */
-        String sEmail = sessionManager.getEmail();
-        String sContact = sessionManager.getContact();
-        TextView emailTV = (TextView) navigationView.findViewById(R.id.user_name);
-        TextView contactTv = (TextView) navigationView.findViewById(R.id.user_contact);
-        emailTV.setText(sEmail);
-        contactTv.setText(sContact);
+        emailTv = (TextView) navigationView.findViewById(R.id.user_name);
+        contactTv = (TextView) navigationView.findViewById(R.id.user_contact);
 
         /**
          * setting the navigation items to the navigation view
@@ -181,6 +179,13 @@ public class Dashboard extends AppCompatActivity
 
     }
 
+    private void updateUserInfo() {
+        String sEmail = sessionManager.getEmail();
+        String sContact = sessionManager.getContact();
+        emailTv.setText(sEmail);
+        contactTv.setText(sContact);
+    }
+
     @Override
     public void onItemClick(RecyclerView recyclerView, View view, int position) {
         switch (position) {
@@ -191,10 +196,10 @@ public class Dashboard extends AppCompatActivity
                 startActivity(new Intent(Dashboard.this, OrderActivity.class));
                 break;
             case 2:
-                Toast.makeText(getApplicationContext(),"Under construction",Toast.LENGTH_SHORT);
+                Toast.makeText(getApplicationContext(), "Under construction", Toast.LENGTH_SHORT);
                 break;
             case 3:
-
+                startActivity(new Intent(Dashboard.this, EditProfileActivity.class));
                 break;
             case 4:
                 sessionManager.logOut();
@@ -341,6 +346,7 @@ public class Dashboard extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        updateUserInfo();
         if (googleApiClient.isConnected()) {
             requestLocationupdate();
         }

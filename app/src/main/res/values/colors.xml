@@ -14,6 +14,7 @@
     <color name="color_green">#399b39</color>
     <color name="color_orange">#e1903d</color>
     <color name="color_grey">#9f9f9f</color>
+    <color name="color_light_grey">#bfbfbf</color>
     <color name="color_dark_grey">#6e6e6e</color>
     <color name="color_btn">#48beff</color>
 </resources>

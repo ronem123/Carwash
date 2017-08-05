@@ -36,6 +36,10 @@
         <item name="android:layout_marginTop">@dimen/_20sdp</item>
     </style>
 
+    <style name="edit_text_style.EDIT">
+        <item name="android:background">@drawable/white_bg_grey_stroke</item>
+    </style>
+
     <style name="event_button" parent="android:Widget.Button">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/_40sdp</item>

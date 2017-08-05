@@ -41,6 +41,9 @@
         <activity
             android:name=".view.order.OrderActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.editprofile.EditProfileActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

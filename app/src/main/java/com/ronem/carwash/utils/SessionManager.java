@@ -3,6 +3,7 @@ package com.ronem.carwash.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 /**
  * Created by ram on 8/1/17.
@@ -26,7 +27,9 @@ public class SessionManager {
         editor = sharedPreferences.edit();
         editor.putString(KEY_FULL_NAME, fullname);
         editor.putString(KEY_EMAIL, email);
-        editor.putString(KEY_PASSWORD, password);
+        if (!TextUtils.isEmpty(password)) {
+            editor.putString(KEY_PASSWORD, password);
+        }
         editor.putString(KEY_CONTACT, contact);
         editor.putInt(KEY_CAR_TYPE, carType);
         editor.putBoolean(IS_LOGIN, true);
@@ -47,6 +50,10 @@ public class SessionManager {
 
     public String getContact() {
         return sharedPreferences.getString(KEY_CONTACT, "");
+    }
+
+    public int getCarType() {
+        return sharedPreferences.getInt(KEY_CAR_TYPE, 0);
     }
 
     public boolean isLoggedIn() {

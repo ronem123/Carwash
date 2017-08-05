@@ -41,4 +41,6 @@
     <string name="time">PM15:25 25/08/17</string>
     <string name="small">Vehicle Type : Small</string>
     <string name="text">text</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="update">Update</string>
 </resources>
