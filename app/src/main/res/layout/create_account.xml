@@ -59,8 +59,31 @@
                 android:id="@+id/edt_contact"
                 style="@style/edit_text_style"
                 android:drawableLeft="@mipmap/ic_stay_current_portrait_black_24dp"
-                android:layout_marginBottom="@dimen/_8sdp"
                 android:hint="@string/contact" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:background="@color/color_white"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:paddingLeft="@dimen/_12sdp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_directions_car_white_24dp"
+                    android:tint="@color/color_login" />
+
+                <Spinner
+                    android:id="@+id/create_account_spinner_car_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/color_white"
+                    android:layout_marginLeft="@dimen/_5sdp" />
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btn_create_account"
@@ -69,7 +92,8 @@
             <Button
                 android:id="@+id/btn_already_member"
                 style="@style/event_button.HaveAccount"
-                android:layout_marginBottom="@dimen/_8sdp"/>
+                android:layout_marginBottom="@dimen/_8sdp" />
+
         </LinearLayout>
     </ScrollView>
 

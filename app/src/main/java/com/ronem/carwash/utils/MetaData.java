@@ -19,10 +19,15 @@ public class MetaData {
     public static final String MSG_EMPTY_FIELD = "Field should not be empty";
     public static final String MSG_PASSWORD_NOT_MATCHED = "Sorry ! But password not matched";
     public static final String MSG_EMAIL_NOT_FOUND = "Sorry But This email not found in our database";
+    public static final String MSG_SELECT_CAR_TYPE = "Please select what type of car you have";
+    public static final String SELECT_CAR_TYPE="Choose car type";
 
     public static NavItem[] getnavItems() {
         NavItem[] items = new NavItem[]{
-                new NavItem(R.mipmap.ic_add_shopping_cart_white_24dp, "My Orders"),
+                new NavItem(R.mipmap.ic_directions_car_black_24dp, "Car Washers"),
+                new NavItem(R.mipmap.ic_add_shopping_cart_white_24dp, "Orders"),
+                new NavItem(R.mipmap.ic_notifications_black_24dp, "Notifications"),
+                new NavItem(R.mipmap.ic_edit_black_24dp, "Edit Profile"),
                 new NavItem(R.mipmap.ic_power_settings_new_white_24dp, "Log out")
         };
 

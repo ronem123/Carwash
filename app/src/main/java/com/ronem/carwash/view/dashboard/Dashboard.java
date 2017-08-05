@@ -175,6 +175,7 @@ public class Dashboard extends AppCompatActivity
         navRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         navRecyclerView.addItemDecoration(new ItemDividerDecoration(this, null));
         navRecyclerView.setHasFixedSize(true);
+        navRecyclerView.addItemDecoration(new ItemDividerDecoration(this, null));
         navRecyclerView.setAdapter(new NavAdapter(items));
         navRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
 
@@ -187,6 +188,15 @@ public class Dashboard extends AppCompatActivity
                 startActivity(new Intent(Dashboard.this, OrderActivity.class));
                 break;
             case 1:
+                startActivity(new Intent(Dashboard.this, OrderActivity.class));
+                break;
+            case 2:
+                Toast.makeText(getApplicationContext(),"Under construction",Toast.LENGTH_SHORT);
+                break;
+            case 3:
+
+                break;
+            case 4:
                 sessionManager.logOut();
                 Intent i = new Intent(Dashboard.this, LoginRegisterActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

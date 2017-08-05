@@ -6,20 +6,29 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.ronem.carwash.R;
+import com.ronem.carwash.adapters.CarTypeAdapter;
+import com.ronem.carwash.adapters.CarTypeAdapterRegister;
+import com.ronem.carwash.model.CarType;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.SessionManager;
 import com.ronem.carwash.view.dashboard.Dashboard;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,7 +38,7 @@ import butterknife.OnClick;
  * Created by ram on 7/31/17.
  */
 
-public class LoginRegisterActivity extends AppCompatActivity {
+public class LoginRegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     @Bind(R.id.create_account_layout)
     LinearLayout createAccLayout;
     @Bind(R.id.login_layout)
@@ -45,6 +54,8 @@ public class LoginRegisterActivity extends AppCompatActivity {
     EditText edtConfirmPassword;
     @Bind(R.id.edt_contact)
     EditText edtContact;
+    @Bind(R.id.create_account_spinner_car_type)
+    Spinner spinnerCarType;
 
     @Bind(R.id.edt_login_email)
     EditText edtLoginEmail;
@@ -53,6 +64,8 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
     private SessionManager sessionManager;
     private final int PERMISSION_REQUEST_CODE = 100;
+    private List<CarType> carTypes;
+    private CarType carType;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,9 +81,20 @@ public class LoginRegisterActivity extends AppCompatActivity {
         if (sessionManager.isLoggedIn()) {
             launchDashboard();
         } else {
-        loginLayout.setVisibility(View.VISIBLE);
-        createAccLayout.setVisibility(View.GONE);
+            loginLayout.setVisibility(View.VISIBLE);
+            createAccLayout.setVisibility(View.GONE);
         }
+
+        configureSCarTypeSpinner();
+    }
+
+    private void configureSCarTypeSpinner() {
+        carTypes = new ArrayList<>();
+        carTypes.add(new CarType(0, MetaData.SELECT_CAR_TYPE, ""));
+        carTypes.addAll(MetaData.getCarType());
+
+        spinnerCarType.setAdapter(new CarTypeAdapterRegister(carTypes, this));
+        spinnerCarType.setOnItemSelectedListener(this);
     }
 
     @Override
@@ -93,12 +117,13 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 || TextUtils.isEmpty(confirmPassword)
                 || TextUtils.isEmpty(contact)) {
             showMessage(MetaData.MSG_EMPTY_FIELD);
+        } else if (carType.getType().equals(MetaData.SELECT_CAR_TYPE)) {
+            showMessage(MetaData.MSG_SELECT_CAR_TYPE);
         } else if (!password.equals(confirmPassword)) {
             showMessage(MetaData.MSG_PASSWORD_NOT_MATCHED);
         } else {
-            sessionManager.setLogin(fullName, email, password, contact);
+            sessionManager.setLogin(fullName, email, password, contact,carType.getId());
 
-//            launchDashboard();
             checkRunTimePermissionLaunchDashboard();
         }
     }
@@ -110,7 +135,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
             requestPermissions(new String[]{
                     android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION
             }, PERMISSION_REQUEST_CODE);
-        }else{
+        } else {
             launchDashboard();
         }
     }
@@ -167,5 +192,16 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
     private void showMessage(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        carType = carTypes.get(i);
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }

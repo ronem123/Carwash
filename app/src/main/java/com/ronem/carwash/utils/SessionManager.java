@@ -16,17 +16,19 @@ public class SessionManager {
     private final String KEY_EMAIL = "email";
     private final String KEY_PASSWORD = "password";
     private final String KEY_CONTACT = "contact";
+    private final String KEY_CAR_TYPE = "car_type";
 
     public SessionManager(Context context) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public void setLogin(String fullname, String email, String password, String contact) {
+    public void setLogin(String fullname, String email, String password, String contact, int carType) {
         editor = sharedPreferences.edit();
         editor.putString(KEY_FULL_NAME, fullname);
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_PASSWORD, password);
         editor.putString(KEY_CONTACT, contact);
+        editor.putInt(KEY_CAR_TYPE, carType);
         editor.putBoolean(IS_LOGIN, true);
         editor.apply();
     }
