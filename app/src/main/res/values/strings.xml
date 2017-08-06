@@ -43,4 +43,7 @@
     <string name="text">text</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="update">Update</string>
+    <string name="car_washer_item">Car washer</string>
+    <string name="delivered">Delivered</string>
+    <string name="station">Stations</string>
 </resources>

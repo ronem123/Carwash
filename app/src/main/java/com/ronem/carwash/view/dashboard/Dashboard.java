@@ -31,6 +31,8 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,6 +70,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by ram on 8/1/17.
@@ -166,6 +169,41 @@ public class Dashboard extends AppCompatActivity
         contactTv = (TextView) navigationView.findViewById(R.id.user_contact);
 
         /**
+         * expandable items
+         */
+        RelativeLayout carWasherLayout = (RelativeLayout) navigationView.findViewById(R.id.car_washer_layout);
+        final LinearLayout expandableLayout = (LinearLayout) navigationView.findViewById(R.id.expandable_layout);
+        LinearLayout deliveredLayout = (LinearLayout) navigationView.findViewById(R.id.delivered_layout);
+        LinearLayout stationLayout = (LinearLayout) navigationView.findViewById(R.id.station_layout);
+
+
+        View.OnClickListener myNavItemListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()) {
+                    case R.id.car_washer_layout:
+                        if (expandableLayout.getVisibility() == View.VISIBLE) {
+                            expandableLayout.setVisibility(View.GONE);
+                        } else {
+                            expandableLayout.setVisibility(View.VISIBLE);
+                        }
+                        break;
+                    case R.id.delivered_layout:
+                        Toast.makeText(getApplicationContext(),"delivered",Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.station_layout:
+                        Toast.makeText(getApplicationContext(),"station",Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        };
+
+        carWasherLayout.setOnClickListener(myNavItemListener);
+        deliveredLayout.setOnClickListener(myNavItemListener);
+        stationLayout.setOnClickListener(myNavItemListener);
+
+
+        /**
          * setting the navigation items to the navigation view
          */
         items = MetaData.getnavItems();
@@ -186,6 +224,7 @@ public class Dashboard extends AppCompatActivity
         contactTv.setText(sContact);
     }
 
+
     @Override
     public void onItemClick(RecyclerView recyclerView, View view, int position) {
         switch (position) {
@@ -193,15 +232,12 @@ public class Dashboard extends AppCompatActivity
                 startActivity(new Intent(Dashboard.this, OrderActivity.class));
                 break;
             case 1:
-                startActivity(new Intent(Dashboard.this, OrderActivity.class));
+                Toast.makeText(getApplicationContext(), "Under construction", Toast.LENGTH_SHORT).show();
                 break;
             case 2:
-                Toast.makeText(getApplicationContext(), "Under construction", Toast.LENGTH_SHORT);
-                break;
-            case 3:
                 startActivity(new Intent(Dashboard.this, EditProfileActivity.class));
                 break;
-            case 4:
+            case 3:
                 sessionManager.logOut();
                 Intent i = new Intent(Dashboard.this, LoginRegisterActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

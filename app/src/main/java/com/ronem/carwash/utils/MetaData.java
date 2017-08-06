@@ -24,7 +24,6 @@ public class MetaData {
 
     public static NavItem[] getnavItems() {
         NavItem[] items = new NavItem[]{
-                new NavItem(R.mipmap.ic_directions_car_black_24dp, "Car Washers"),
                 new NavItem(R.mipmap.ic_add_shopping_cart_white_24dp, "Orders"),
                 new NavItem(R.mipmap.ic_notifications_black_24dp, "Notifications"),
                 new NavItem(R.mipmap.ic_edit_black_24dp, "Edit Profile"),
