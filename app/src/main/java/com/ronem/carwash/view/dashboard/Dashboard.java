@@ -353,7 +353,7 @@ public class Dashboard extends AppCompatActivity
             public boolean onMarkerClick(Marker marker) {
                 Integer tag = (Integer) marker.getTag();
                 if (tag != -1) {
-                    MyDialog d = new MyDialog(Dashboard.this, 1);
+                    MyDialog d = new MyDialog(Dashboard.this, "", "", null);
                     d.show();
                 }
                 return true;
@@ -397,7 +397,7 @@ public class Dashboard extends AppCompatActivity
     }
 
     @Override
-    public void onPolyLineOptionReceived(PolylineOptions polylineOptions) {
+    public void onPolyLineOptionReceived(PolylineOptions polylineOptions,String distance,String duration) {
         googleMap.addPolyline(polylineOptions);
     }
 

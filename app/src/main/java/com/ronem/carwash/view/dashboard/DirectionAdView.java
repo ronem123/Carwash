@@ -7,6 +7,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
  */
 
 public interface DirectionAdView {
-    void onPolyLineOptionReceived(PolylineOptions polylineOptions);
+    void onPolyLineOptionReceived(PolylineOptions polylineOptions, String distance, String duration);
 
 }

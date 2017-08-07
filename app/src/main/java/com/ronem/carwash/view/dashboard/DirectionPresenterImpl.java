@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.ronem.carwash.model.RouteDistanceDuration;
 import com.ronem.carwash.utils.BasicUtilityMethods;
 import com.ronem.carwash.utils.DataParser;
 
@@ -37,41 +38,41 @@ public class DirectionPresenterImpl implements DirectionPresenter {
     }
 
 
-    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+    private class ParserTask extends AsyncTask<String, Integer, RouteDistanceDuration> {
 
         // Parsing the data in non-ui thread
         @Override
-        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
+        protected RouteDistanceDuration doInBackground(String... jsonData) {
 
             JSONObject jObject;
-            List<List<HashMap<String, String>>> routes = null;
+            RouteDistanceDuration rdd = null;
 
             try {
                 jObject = new JSONObject(jsonData[0]);
                 DataParser parser = new DataParser();
 
                 // Starts parsing data
-                routes = parser.parse(jObject);
+                rdd = parser.parse(jObject);
 
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return routes;
+            return rdd;
         }
 
         // Executes in UI thread, after the parsing process
         @Override
-        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
+        protected void onPostExecute(RouteDistanceDuration result) {
             ArrayList<LatLng> points;
             PolylineOptions lineOptions = null;
 
             // Traversing through all the routes
-            for (int i = 0; i < result.size(); i++) {
+            for (int i = 0; i < result.getRoutes().size(); i++) {
                 points = new ArrayList<>();
                 lineOptions = new PolylineOptions();
 
                 // Fetching i-th route
-                List<HashMap<String, String>> path = result.get(i);
+                List<HashMap<String, String>> path = result.getRoutes().get(i);
 
                 // Fetching all the points in i-th route
                 for (int j = 0; j < path.size(); j++) {
@@ -95,7 +96,7 @@ public class DirectionPresenterImpl implements DirectionPresenter {
             // Drawing polyline in the Google Map for the i-th route
             if (lineOptions != null) {
 //                googleMap.addPolyline(lineOptions);
-                directionAdView.onPolyLineOptionReceived(lineOptions);
+                directionAdView.onPolyLineOptionReceived(lineOptions, result.getDistance(), result.getDuration());
             } else {
                 Log.i("onPostExecute", "without Polylines drawn");
             }

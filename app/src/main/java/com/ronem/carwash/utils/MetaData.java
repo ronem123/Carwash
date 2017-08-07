@@ -20,7 +20,10 @@ public class MetaData {
     public static final String MSG_PASSWORD_NOT_MATCHED = "Sorry ! But password not matched";
     public static final String MSG_EMAIL_NOT_FOUND = "Sorry But This email not found in our database";
     public static final String MSG_SELECT_CAR_TYPE = "Please select what type of car you have";
-    public static final String SELECT_CAR_TYPE="Choose car type";
+    public static final String SELECT_CAR_TYPE = "Choose car type";
+    public static final String KEY_ADDRESS = "address";
+    public static final String KEY_DISTANCE = "distance";
+    public static final String KEY_DURATION = "duration";
 
     public static NavItem[] getnavItems() {
         NavItem[] items = new NavItem[]{
@@ -36,10 +39,10 @@ public class MetaData {
     public static List<DeliveredStationLocation> getStations() {
         List<DeliveredStationLocation> ls = new ArrayList<>();
 
-        ls.add(new DeliveredStationLocation(1, "Station 1", "East North", 27.651371, 85.3277125));
-        ls.add(new DeliveredStationLocation(2, "Station 2", "East South", 27.637367, 85.3278748));
-        ls.add(new DeliveredStationLocation(3, "Station 3", "Dhapakhel Cloths", 27.637665, 85.3216349));
-        ls.add(new DeliveredStationLocation(4, "station 4", "Tewa clothes store", 27.639012, 85.3258318));
+        ls.add(new DeliveredStationLocation(1, "John Cena", "John Cena Station Address", "123456789", 3, 27.651371, 85.3277125));
+        ls.add(new DeliveredStationLocation(2, "Batista", "Batista Station Address", "987654321", 4, 27.637367, 85.3278748));
+        ls.add(new DeliveredStationLocation(3, "John Michel", "John Michel Station Address", "123459876", 1, 27.637665, 85.3216349));
+        ls.add(new DeliveredStationLocation(4, "Under Taker", "Under Taker Station,Address", "54312789", 3, 27.639012, 85.3258318));
 
         return ls;
     }
@@ -47,10 +50,10 @@ public class MetaData {
     public static List<DeliveredStationLocation> getDeliveredLocations() {
         List<DeliveredStationLocation> ls = new ArrayList<>();
 
-        ls.add(new DeliveredStationLocation(1, "Delivered 1", "East North", 27.651371, 85.3277125));
-        ls.add(new DeliveredStationLocation(2, "Delivered 2", "East South", 27.637367, 85.3278748));
-        ls.add(new DeliveredStationLocation(3, "Delivered 3", "Dhapakhel Cloths", 27.637665, 85.3216349));
-        ls.add(new DeliveredStationLocation(4, "Delivered 4", "Tewa clothes store", 27.639012, 85.3258318));
+        ls.add(new DeliveredStationLocation(1, "John Cena", "John Cena Address", "123456789", 3, 27.651371, 85.3277125));
+        ls.add(new DeliveredStationLocation(2, "Batista", "Batista Address", "987654321", 4, 27.637367, 85.3278748));
+        ls.add(new DeliveredStationLocation(3, "John Michel", "John Michel Address", "123459876", 2, 27.637665, 85.3216349));
+        ls.add(new DeliveredStationLocation(4, "Under Taker", "Under Taker Address", "54312789", 1, 27.639012, 85.3258318));
 
         return ls;
     }

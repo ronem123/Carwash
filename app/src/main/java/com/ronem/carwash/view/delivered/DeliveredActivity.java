@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
@@ -25,21 +26,21 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ronem.carwash.R;
 import com.ronem.carwash.model.DeliveredStationLocation;
 import com.ronem.carwash.utils.BasicUtilityMethods;
 import com.ronem.carwash.utils.MetaData;
+import com.ronem.carwash.utils.SessionManager;
+import com.ronem.carwash.view.MyDialog;
 import com.ronem.carwash.view.dashboard.DirectionAdView;
 import com.ronem.carwash.view.dashboard.DirectionPresenter;
 import com.ronem.carwash.view.dashboard.DirectionPresenterImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -66,8 +67,12 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
     private DirectionPresenter presenter;
     private Marker mPositionMarker;
     private Location myLocation;
-    private LatLng myLatlang;
-//    private List<Marker> markers;
+    private LatLng myLatlang, destinationLatlang;
+    private DeliveredStationLocation deliveredStationLocation;
+    //    private List<Marker> markers;
+    private PolylineOptions polylineOptions;
+    private Polyline polyline;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,6 +80,7 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
         setContentView(R.layout.delivered_layout);
 
         ButterKnife.bind(this);
+        sessionManager = new SessionManager(this);
         settingToolbar();
 
         presenter = new DirectionPresenterImpl();
@@ -185,17 +191,21 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
             @Override
             public boolean onMarkerClick(Marker marker) {
                 Integer tag = (Integer) marker.getTag();
-                LatLng destinationLatLang = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+                destinationLatlang = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
 
                 if (tag != -1) {
-//                    MyDialog d = new MyDialog(DeliveredActivity.this, 1);
-//                    d.show();
+
                     if (myLocation == null) {
                         Toast.makeText(getApplicationContext(), "sorry location not found", Toast.LENGTH_SHORT).show();
                     } else {
-                        String url = BasicUtilityMethods.getUrl(myLatlang, destinationLatLang);
-
+                        String url = BasicUtilityMethods.getUrl(myLatlang, destinationLatlang);
+                        Log.i("URL::", url);
                         if (BasicUtilityMethods.isNetworkOnline(DeliveredActivity.this)) {
+                            for (DeliveredStationLocation d : deliveredLocations) {
+                                if (d.getlId() == tag) {
+                                    deliveredStationLocation = d;
+                                }
+                            }
                             presenter.onGetPolyLineOptions(url);
                         } else {
                             Toast.makeText(getApplicationContext(), "Please enable your internet connection", Toast.LENGTH_SHORT).show();
@@ -234,13 +244,13 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
 //        }
 
 
-
-
     }
 
     @Override
-    public void onPolyLineOptionReceived(PolylineOptions polylineOptions) {
-        googleMap.addPolyline(polylineOptions);
+    public void onPolyLineOptionReceived(PolylineOptions polylineOptions, String distance, String duration) {
+        MyDialog d = new MyDialog(DeliveredActivity.this, distance, duration, deliveredStationLocation);
+        d.show();
+        this.polylineOptions = polylineOptions;
     }
 
     @Override
@@ -254,6 +264,16 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
         super.onResume();
         if (googleApiClient.isConnected()) {
             requestLocationupdate();
+        }
+
+        if (polylineOptions != null) {
+            if (sessionManager.getPaymentDone()) {
+                if (polyline != null) {
+                    polyline.remove();
+                }
+                polyline = googleMap.addPolyline(polylineOptions);
+                sessionManager.clearPaymentDone();
+            }
         }
     }
 

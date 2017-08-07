@@ -5,6 +5,7 @@ package com.ronem.carwash.utils;
  */
 
 import com.google.android.gms.maps.model.LatLng;
+import com.ronem.carwash.model.RouteDistanceDuration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,12 +20,16 @@ public class DataParser {
     /**
      * Receives a JSONObject and returns a list of lists containing latitude and longitude
      */
-    public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
+    public RouteDistanceDuration parse(JSONObject jObject) {
 
+        RouteDistanceDuration rdd;
         List<List<HashMap<String, String>>> routes = new ArrayList<>();
         JSONArray jRoutes;
         JSONArray jLegs;
         JSONArray jSteps;
+
+        String duration = "";
+        String distance = "";
 
         try {
 
@@ -33,11 +38,21 @@ public class DataParser {
             /** Traversing all routes */
             for (int i = 0; i < jRoutes.length(); i++) {
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
+
                 List path = new ArrayList<>();
+
 
                 /** Traversing all legs */
                 for (int j = 0; j < jLegs.length(); j++) {
-                    jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
+                    JSONObject lObg = jLegs.getJSONObject(j);
+
+                    /**getting the distance and duration*/
+
+                    distance = lObg.getJSONObject("distance").getString("text");
+                    duration = lObg.getJSONObject("duration").getString("text");
+
+//                    jSteps = ((JSONObject) jLegs.get(j)).getJSONArray("steps");
+                    jSteps = lObg.getJSONArray("steps");
 
                     /** Traversing all steps */
                     for (int k = 0; k < jSteps.length(); k++) {
@@ -62,8 +77,9 @@ public class DataParser {
         } catch (Exception e) {
         }
 
+        rdd = new RouteDistanceDuration(routes, distance, duration);
 
-        return routes;
+        return rdd;
     }
 
 

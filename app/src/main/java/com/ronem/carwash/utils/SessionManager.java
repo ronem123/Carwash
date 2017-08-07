@@ -19,6 +19,8 @@ public class SessionManager {
     private final String KEY_CONTACT = "contact";
     private final String KEY_CAR_TYPE = "car_type";
 
+    private final String KEY_PAYMENT_DONE = "payment_done";
+
     public SessionManager(Context context) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -68,5 +70,19 @@ public class SessionManager {
         editor.putString(KEY_CONTACT, "");
         editor.putBoolean(IS_LOGIN, false);
         editor.apply();
+    }
+
+    public void setPaymentDone() {
+        editor = sharedPreferences.edit();
+        editor.putBoolean(KEY_PAYMENT_DONE, true).apply();
+    }
+
+    public boolean getPaymentDone() {
+        return sharedPreferences.getBoolean(KEY_PAYMENT_DONE, false);
+    }
+
+    public void clearPaymentDone() {
+        editor = sharedPreferences.edit();
+        editor.putBoolean(KEY_PAYMENT_DONE, false).apply();
     }
 }

@@ -11,7 +11,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.RatingBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ronem.carwash.R;
@@ -20,9 +22,11 @@ import com.ronem.carwash.adapters.CarTypeAdapter;
 import com.ronem.carwash.adapters.PaymentAdapter;
 import com.ronem.carwash.model.Address;
 import com.ronem.carwash.model.CarType;
+import com.ronem.carwash.model.DeliveredStationLocation;
 import com.ronem.carwash.model.PaymentMethod;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.RecyclerItemClickListener;
+import com.ronem.carwash.utils.SessionManager;
 
 import java.util.List;
 
@@ -36,6 +40,18 @@ import butterknife.OnClick;
 
 public class ShowDetailActivity extends AppCompatActivity
         implements AdapterView.OnItemSelectedListener, RecyclerItemClickListener.OnItemClickListener {
+
+    @Bind(R.id.show_more_distance)
+    TextView distanceView;
+    @Bind(R.id.show_more_estimation_time)
+    TextView timeView;
+    @Bind(R.id.car_washer_name)
+    TextView carwasherNameView;
+    @Bind(R.id.car_washer_contact)
+    TextView contactView;
+    @Bind(R.id.rating)
+    RatingBar ratingBar;
+
     @Bind(R.id.spinner_car_type)
     Spinner spinnerCarType;
     @Bind(R.id.spinner_car_washer_address)
@@ -52,6 +68,11 @@ public class ShowDetailActivity extends AppCompatActivity
     private String price;
     private String paymentMethod;
     private List<PaymentMethod> paymentMethods;
+    private SessionManager sessionManager;
+
+    private DeliveredStationLocation deliveredStationLocation;
+    private String distance;
+    private String time;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,6 +80,12 @@ public class ShowDetailActivity extends AppCompatActivity
         setContentView(R.layout.show_detail_activity);
         ButterKnife.bind(this);
 
+        deliveredStationLocation = getIntent().getParcelableExtra(MetaData.KEY_ADDRESS);
+        distance = getIntent().getStringExtra(MetaData.KEY_DISTANCE);
+        time = getIntent().getStringExtra(MetaData.KEY_DURATION);
+        setIntetnData();
+
+        sessionManager = new SessionManager(this);
         carTypes = MetaData.getCarType();
         addresses = MetaData.getAddress();
         paymentMethods = MetaData.getpaymentMEthods();
@@ -74,6 +101,14 @@ public class ShowDetailActivity extends AppCompatActivity
         paymentREcyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
         paymentREcyclerView.setAdapter(new PaymentAdapter(paymentMethods));
 
+    }
+
+    private void setIntetnData() {
+        distanceView.setText(distance);
+        timeView.setText(time);
+        carwasherNameView.setText(deliveredStationLocation.getCarWasher());
+        contactView.setText(deliveredStationLocation.getContact());
+        ratingBar.setNumStars(deliveredStationLocation.getRating());
     }
 
     @Override
@@ -100,7 +135,10 @@ public class ShowDetailActivity extends AppCompatActivity
         String add = address.getAddress();
         if (!TextUtils.isEmpty(paymentMethod)) {
 
-            Log.i("sum", type + "\n" + add + "\n" + price + "\n" + paymentMethod);
+            Toast.makeText(getApplicationContext(), type + "\n" + add + "\n" + price + "\n" + paymentMethod, Toast.LENGTH_LONG).show();
+            sessionManager.setPaymentDone();
+            onBackPressed();
+
         } else {
             Toast.makeText(getApplicationContext(), "Please select at least one payment method", Toast.LENGTH_SHORT).show();
         }

@@ -49,6 +49,7 @@
                     android:text="@string/car_washer_contact" />
 
                 <RatingBar
+                    android:id="@+id/rating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_10sdp"

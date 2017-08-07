@@ -17,7 +17,7 @@ import butterknife.ButterKnife;
 public class NavViewHolder extends RecyclerView.ViewHolder {
     @Bind(R.id.icon)
     public ImageView icon;
-    @Bind(R.id.title)
+    @Bind(R.id.carWasher)
     public TextView title;
 
     public NavViewHolder(View itemView) {

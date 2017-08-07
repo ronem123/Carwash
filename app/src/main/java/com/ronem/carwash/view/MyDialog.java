@@ -5,9 +5,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.view.Window;
+import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.ronem.carwash.R;
+import com.ronem.carwash.model.DeliveredStationLocation;
+import com.ronem.carwash.utils.DistanceCalculator;
+import com.ronem.carwash.utils.MetaData;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -16,14 +22,36 @@ import butterknife.OnClick;
  */
 
 public class MyDialog extends Dialog {
+    @Bind(R.id.distance)
+    TextView distanceView;
+    @Bind(R.id.time_to_reach)
+    TextView timeToReach;
+    @Bind(R.id.time_to_reach_location)
+    TextView location;
+    @Bind(R.id.car_washer)
+    TextView carWasherV;
 
-    public MyDialog(Context context, int id) {
+    private DeliveredStationLocation deliveredStationLocation;
+    private String distance;
+    private String duration;
+
+    public MyDialog(Context context, String distance, String duration, DeliveredStationLocation deliveredStationLocation) {
         super(context, R.style.slideAnimation);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setCancelable(true);
         getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
         setContentView(R.layout.my_dialog);
         ButterKnife.bind(this);
+
+        this.deliveredStationLocation = deliveredStationLocation;
+        this.distance = distance;
+        this.duration = duration;
+
+        distanceView.setText(distance);
+        timeToReach.setText(duration);
+
+        location.setText(deliveredStationLocation.getAddress());
+        carWasherV.setText(deliveredStationLocation.getCarWasher());
     }
 
     @Override
@@ -35,7 +63,11 @@ public class MyDialog extends Dialog {
     @OnClick(R.id.dialog_btn_show_more)
     public void onDialogBtnShowMoreClicked() {
         Intent i = new Intent(getContext(), ShowDetailActivity.class);
+        i.putExtra(MetaData.KEY_ADDRESS, deliveredStationLocation);
+        i.putExtra(MetaData.KEY_DISTANCE, distance);
+        i.putExtra(MetaData.KEY_DURATION, duration);
         getContext().startActivity(i);
+        dismiss();
     }
 
     @OnClick(R.id.dialog_btn_close)
