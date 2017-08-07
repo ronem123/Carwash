@@ -3,7 +3,7 @@ package com.ronem.carwash.utils;
 import com.ronem.carwash.R;
 import com.ronem.carwash.model.Address;
 import com.ronem.carwash.model.CarType;
-import com.ronem.carwash.model.CarWashLocation;
+import com.ronem.carwash.model.DeliveredStationLocation;
 import com.ronem.carwash.model.NavItem;
 import com.ronem.carwash.model.PaymentMethod;
 
@@ -33,13 +33,24 @@ public class MetaData {
         return items;
     }
 
-    public static List<CarWashLocation> getLocations() {
-        List<CarWashLocation> ls = new ArrayList<>();
+    public static List<DeliveredStationLocation> getStations() {
+        List<DeliveredStationLocation> ls = new ArrayList<>();
 
-        ls.add(new CarWashLocation(1, "Car wash 1", "East North", 27.651371, 85.3277125));
-        ls.add(new CarWashLocation(2, "Car wash 2", "East South", 27.637367, 85.3278748));
-        ls.add(new CarWashLocation(3, "Car wash 3", "Dhapakhel Cloths", 27.637665, 85.3216349));
-        ls.add(new CarWashLocation(4, "Car wash 4", "Tewa clothes store", 27.639012, 85.3258318));
+        ls.add(new DeliveredStationLocation(1, "Station 1", "East North", 27.651371, 85.3277125));
+        ls.add(new DeliveredStationLocation(2, "Station 2", "East South", 27.637367, 85.3278748));
+        ls.add(new DeliveredStationLocation(3, "Station 3", "Dhapakhel Cloths", 27.637665, 85.3216349));
+        ls.add(new DeliveredStationLocation(4, "station 4", "Tewa clothes store", 27.639012, 85.3258318));
+
+        return ls;
+    }
+
+    public static List<DeliveredStationLocation> getDeliveredLocations() {
+        List<DeliveredStationLocation> ls = new ArrayList<>();
+
+        ls.add(new DeliveredStationLocation(1, "Delivered 1", "East North", 27.651371, 85.3277125));
+        ls.add(new DeliveredStationLocation(2, "Delivered 2", "East South", 27.637367, 85.3278748));
+        ls.add(new DeliveredStationLocation(3, "Delivered 3", "Dhapakhel Cloths", 27.637665, 85.3216349));
+        ls.add(new DeliveredStationLocation(4, "Delivered 4", "Tewa clothes store", 27.639012, 85.3258318));
 
         return ls;
     }

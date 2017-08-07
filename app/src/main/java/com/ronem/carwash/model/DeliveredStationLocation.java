@@ -4,14 +4,14 @@ package com.ronem.carwash.model;
  * Created by ronem on 8/2/17.
  */
 
-public class CarWashLocation {
+public class DeliveredStationLocation {
     private int lId;
     private String title;
     private String address;
     private double latitude;
     private double longitude;
 
-    public CarWashLocation(int lId, String title, String address, double latitude, double longitude) {
+    public DeliveredStationLocation(int lId, String title, String address, double latitude, double longitude) {
         this.lId = lId;
         this.title = title;
         this.address = address;

@@ -1,39 +1,20 @@
-package com.ronem.carwash.view.dashboard;
+package com.ronem.carwash.view.delivered;
 
 import android.Manifest;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
+import android.view.MenuItem;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -50,20 +31,16 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ronem.carwash.R;
-import com.ronem.carwash.adapters.NavAdapter;
 import com.ronem.carwash.model.DeliveredStationLocation;
-import com.ronem.carwash.model.NavItem;
 import com.ronem.carwash.utils.BasicUtilityMethods;
 import com.ronem.carwash.utils.DistanceCalculator;
-import com.ronem.carwash.utils.ItemDividerDecoration;
 import com.ronem.carwash.utils.MetaData;
-import com.ronem.carwash.utils.RecyclerItemClickListener;
 import com.ronem.carwash.utils.SessionManager;
-import com.ronem.carwash.view.LoginRegisterActivity;
 import com.ronem.carwash.view.MyDialog;
-import com.ronem.carwash.view.delivered.DeliveredActivity;
-import com.ronem.carwash.view.editprofile.EditProfileActivity;
-import com.ronem.carwash.view.order.OrderActivity;
+import com.ronem.carwash.view.dashboard.Dashboard;
+import com.ronem.carwash.view.dashboard.DirectionAdView;
+import com.ronem.carwash.view.dashboard.DirectionPresenter;
+import com.ronem.carwash.view.dashboard.DirectionPresenterImpl;
 
 import java.util.List;
 
@@ -71,12 +48,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by ram on 8/1/17.
+ * Created by ronem on 8/7/17.
  */
 
-public class Dashboard extends AppCompatActivity
-        implements RecyclerItemClickListener.OnItemClickListener,
-        OnMapReadyCallback,
+public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener,
@@ -85,16 +60,6 @@ public class Dashboard extends AppCompatActivity
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.drawer_layout)
-    DrawerLayout drawerLayout;
-    @Bind(R.id.nav_view)
-    NavigationView navigationView;
-
-    private TextView emailTv;
-    private TextView contactTv;
-
-    private NavItem[] items;
-    private SessionManager sessionManager;
 
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
@@ -103,15 +68,13 @@ public class Dashboard extends AppCompatActivity
     private DirectionPresenter presenter;
     private Marker mPositionMarker;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.dashboard);
+        setContentView(R.layout.delivered_layout);
+
         ButterKnife.bind(this);
-        sessionManager = new SessionManager(this);
         settingToolbar();
-        setUpNavigationMenu();
 
         presenter = new DirectionPresenterImpl();
         presenter.onAddDirectionView(this);
@@ -126,7 +89,6 @@ public class Dashboard extends AppCompatActivity
 
         loadmap();
     }
-
 
     private void createGoogleApiClient() {
         googleApiClient = new GoogleApiClient.Builder(this)
@@ -155,95 +117,6 @@ public class Dashboard extends AppCompatActivity
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (NullPointerException ne) {
             ne.printStackTrace();
-        }
-    }
-
-    private void setUpNavigationMenu() {
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawerLayout.setDrawerListener(toggle);
-        toggle.syncState();
-
-        emailTv = (TextView) navigationView.findViewById(R.id.user_name);
-        contactTv = (TextView) navigationView.findViewById(R.id.user_contact);
-
-        /**
-         * expandable items
-         */
-        RelativeLayout carWasherLayout = (RelativeLayout) navigationView.findViewById(R.id.car_washer_layout);
-        final LinearLayout expandableLayout = (LinearLayout) navigationView.findViewById(R.id.expandable_layout);
-        LinearLayout deliveredLayout = (LinearLayout) navigationView.findViewById(R.id.delivered_layout);
-        LinearLayout stationLayout = (LinearLayout) navigationView.findViewById(R.id.station_layout);
-
-
-        View.OnClickListener myNavItemListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
-                    case R.id.car_washer_layout:
-                        if (expandableLayout.getVisibility() == View.VISIBLE) {
-                            expandableLayout.setVisibility(View.GONE);
-                        } else {
-                            expandableLayout.setVisibility(View.VISIBLE);
-                        }
-                        break;
-                    case R.id.delivered_layout:
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        startActivity(new Intent(Dashboard.this, DeliveredActivity.class));
-                        break;
-                    case R.id.station_layout:
-                        drawerLayout.closeDrawer(GravityCompat.START);
-                        break;
-                }
-            }
-        };
-
-        carWasherLayout.setOnClickListener(myNavItemListener);
-        deliveredLayout.setOnClickListener(myNavItemListener);
-        stationLayout.setOnClickListener(myNavItemListener);
-
-
-        /**
-         * setting the navigation items to the navigation view
-         */
-        items = MetaData.getnavItems();
-        RecyclerView navRecyclerView = (RecyclerView) navigationView.findViewById(R.id.nav_recycler_view);
-        navRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        navRecyclerView.addItemDecoration(new ItemDividerDecoration(this, null));
-        navRecyclerView.setHasFixedSize(true);
-        navRecyclerView.addItemDecoration(new ItemDividerDecoration(this, null));
-        navRecyclerView.setAdapter(new NavAdapter(items));
-        navRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
-
-    }
-
-    private void updateUserInfo() {
-        String sEmail = sessionManager.getEmail();
-        String sContact = sessionManager.getContact();
-        emailTv.setText(sEmail);
-        contactTv.setText(sContact);
-    }
-
-
-    @Override
-    public void onItemClick(RecyclerView recyclerView, View view, int position) {
-        drawerLayout.closeDrawer(GravityCompat.START);
-        switch (position) {
-            case 0:
-                startActivity(new Intent(Dashboard.this, OrderActivity.class));
-                break;
-            case 1:
-                Toast.makeText(getApplicationContext(), "Under construction", Toast.LENGTH_SHORT).show();
-                break;
-            case 2:
-                startActivity(new Intent(Dashboard.this, EditProfileActivity.class));
-                break;
-            case 3:
-                sessionManager.logOut();
-                Intent i = new Intent(Dashboard.this, LoginRegisterActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(i);
-                break;
         }
     }
 
@@ -353,25 +226,17 @@ public class Dashboard extends AppCompatActivity
             public boolean onMarkerClick(Marker marker) {
                 Integer tag = (Integer) marker.getTag();
                 if (tag != -1) {
-                    MyDialog d = new MyDialog(Dashboard.this, 1);
+                    MyDialog d = new MyDialog(DeliveredActivity.this, 1);
                     d.show();
                 }
                 return true;
             }
         });
-
-
-    }
-
-    @SuppressWarnings("MissingPermission")
-    private void requestLocationupdate() {
-        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        googleApiClient.connect();
+    public void onPolyLineOptionReceived(PolylineOptions polylineOptions) {
+        googleMap.addPolyline(polylineOptions);
     }
 
     @Override
@@ -383,10 +248,14 @@ public class Dashboard extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        updateUserInfo();
         if (googleApiClient.isConnected()) {
             requestLocationupdate();
         }
+    }
+
+    @SuppressWarnings("MissingPermission")
+    private void requestLocationupdate() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
     }
 
     @Override
@@ -394,11 +263,6 @@ public class Dashboard extends AppCompatActivity
         super.onPause();
         if (googleApiClient.isConnected())
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
-    }
-
-    @Override
-    public void onPolyLineOptionReceived(PolylineOptions polylineOptions) {
-        googleMap.addPolyline(polylineOptions);
     }
 
     private void animateMarker(final Marker marker, final Location location) {
@@ -436,27 +300,10 @@ public class Dashboard extends AppCompatActivity
         });
     }
 
-    private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
-
-        View customMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.marker_layout, null);
-        ImageView markerImageView = (ImageView) customMarkerView.findViewById(R.id.marker_icon);
-        markerImageView.setImageResource(resId);
-        customMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        customMarkerView.layout(0, 0, customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight());
-        customMarkerView.buildDrawingCache();
-        Bitmap returnedBitmap = Bitmap.createBitmap(customMarkerView.getMeasuredWidth(), customMarkerView.getMeasuredHeight(),
-                Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(returnedBitmap);
-        canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
-        Drawable drawable = customMarkerView.getBackground();
-        if (drawable != null)
-            drawable.draw(canvas);
-        customMarkerView.draw(canvas);
-        return returnedBitmap;
-    }
-
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home)
+            onBackPressed();
+        return super.onOptionsItemSelected(item);
     }
 }

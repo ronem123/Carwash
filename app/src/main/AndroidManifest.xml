@@ -44,6 +44,9 @@
         <activity
             android:name=".view.editprofile.EditProfileActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.delivered.DeliveredActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
