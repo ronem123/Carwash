@@ -20,10 +20,13 @@ import com.ronem.carwash.R;
 import com.ronem.carwash.adapters.AddressAdapter;
 import com.ronem.carwash.adapters.CarTypeAdapter;
 import com.ronem.carwash.adapters.PaymentAdapter;
+import com.ronem.carwash.adapters.ServiceTypeAdapter;
 import com.ronem.carwash.model.Address;
 import com.ronem.carwash.model.CarType;
 import com.ronem.carwash.model.DeliveredStationLocation;
+import com.ronem.carwash.model.Order;
 import com.ronem.carwash.model.PaymentMethod;
+import com.ronem.carwash.model.ServiceType;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.RecyclerItemClickListener;
 import com.ronem.carwash.utils.SessionManager;
@@ -56,15 +59,19 @@ public class ShowDetailActivity extends AppCompatActivity
     Spinner spinnerCarType;
     @Bind(R.id.spinner_car_washer_address)
     Spinner spinnerAddress;
+    @Bind(R.id.spinner_service_type)
+    Spinner spinnerServiceTYpe;
     @Bind(R.id.payment_recycler_view)
     RecyclerView paymentREcyclerView;
 
 
     private List<CarType> carTypes;
     private List<Address> addresses;
+    private List<ServiceType> serviceTypes;
 
     private CarType carType;
     private Address address;
+    private ServiceType serviceTye;
     private String price;
     private String paymentMethod;
     private List<PaymentMethod> paymentMethods;
@@ -73,6 +80,7 @@ public class ShowDetailActivity extends AppCompatActivity
     private DeliveredStationLocation deliveredStationLocation;
     private String distance;
     private String time;
+    private String orderType;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -83,19 +91,22 @@ public class ShowDetailActivity extends AppCompatActivity
         deliveredStationLocation = getIntent().getParcelableExtra(MetaData.KEY_ADDRESS);
         distance = getIntent().getStringExtra(MetaData.KEY_DISTANCE);
         time = getIntent().getStringExtra(MetaData.KEY_DURATION);
+        orderType = getIntent().getStringExtra(MetaData.KEY_ORDER_TYPE);
         setIntetnData();
 
         sessionManager = new SessionManager(this);
         carTypes = MetaData.getCarType();
         addresses = MetaData.getAddress();
+        serviceTypes = MetaData.getServiceType();
         paymentMethods = MetaData.getpaymentMEthods();
 
         spinnerCarType.setAdapter(new CarTypeAdapter(carTypes, this));
         spinnerAddress.setAdapter(new AddressAdapter(addresses, this));
+        spinnerServiceTYpe.setAdapter(new ServiceTypeAdapter(serviceTypes, this));
 
         spinnerCarType.setOnItemSelectedListener(this);
         spinnerAddress.setOnItemSelectedListener(this);
-
+        spinnerServiceTYpe.setOnItemSelectedListener(this);
         paymentREcyclerView.setLayoutManager(new LinearLayoutManager(this));
         paymentREcyclerView.setHasFixedSize(true);
         paymentREcyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, this));
@@ -120,6 +131,9 @@ public class ShowDetailActivity extends AppCompatActivity
             case R.id.spinner_car_washer_address:
                 address = addresses.get(i);
                 break;
+            case R.id.spinner_service_type:
+                serviceTye = serviceTypes.get(i);
+                break;
         }
     }
 
@@ -131,12 +145,12 @@ public class ShowDetailActivity extends AppCompatActivity
     @OnClick(R.id.btn_make_payment)
     public void onBtnMakePaymentClicked() {
         price = carType.getPrice();
-        String type = carType.getType();
+        String totalPrice = "Car Price:" + price + "tService charge" + serviceTye.getServiceCharge();
         String add = address.getAddress();
         if (!TextUtils.isEmpty(paymentMethod)) {
-
-            Toast.makeText(getApplicationContext(), type + "\n" + add + "\n" + price + "\n" + paymentMethod, Toast.LENGTH_LONG).show();
             sessionManager.setPaymentDone();
+            Order order = new Order(1, orderType, deliveredStationLocation.getCarWasher(), "", deliveredStationLocation.getContact(), add, carType.getType(), paymentMethod, totalPrice + "", serviceTye.getServiceType());
+            order.save();
             onBackPressed();
 
         } else {

@@ -34,8 +34,9 @@ public class MyDialog extends Dialog {
     private DeliveredStationLocation deliveredStationLocation;
     private String distance;
     private String duration;
+    private String orderType;
 
-    public MyDialog(Context context, String distance, String duration, DeliveredStationLocation deliveredStationLocation) {
+    public MyDialog(Context context, String distance, String duration, DeliveredStationLocation deliveredStationLocation,String orderType) {
         super(context, R.style.slideAnimation);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setCancelable(true);
@@ -46,6 +47,7 @@ public class MyDialog extends Dialog {
         this.deliveredStationLocation = deliveredStationLocation;
         this.distance = distance;
         this.duration = duration;
+        this.orderType = orderType;
 
         distanceView.setText(distance);
         timeToReach.setText(duration);
@@ -64,6 +66,7 @@ public class MyDialog extends Dialog {
     public void onDialogBtnShowMoreClicked() {
         Intent i = new Intent(getContext(), ShowDetailActivity.class);
         i.putExtra(MetaData.KEY_ADDRESS, deliveredStationLocation);
+        i.putExtra(MetaData.KEY_ORDER_TYPE,orderType);
         i.putExtra(MetaData.KEY_DISTANCE, distance);
         i.putExtra(MetaData.KEY_DURATION, duration);
         getContext().startActivity(i);

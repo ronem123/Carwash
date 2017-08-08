@@ -248,7 +248,7 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
 
     @Override
     public void onPolyLineOptionReceived(PolylineOptions polylineOptions, String distance, String duration) {
-        MyDialog d = new MyDialog(DeliveredActivity.this, distance, duration, deliveredStationLocation);
+        MyDialog d = new MyDialog(DeliveredActivity.this, distance, duration, deliveredStationLocation, MetaData.ORDER_TYPE_DELIVERD);
         d.show();
         this.polylineOptions = polylineOptions;
     }

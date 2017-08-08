@@ -48,6 +48,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ronem.carwash.R;
 import com.ronem.carwash.adapters.NavAdapter;
@@ -94,7 +95,7 @@ public class Dashboard extends AppCompatActivity
     private TextView contactTv;
 
     private NavItem[] items;
-    private SessionManager sessionManager;
+
 
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
@@ -102,6 +103,13 @@ public class Dashboard extends AppCompatActivity
     private List<DeliveredStationLocation> stationLocations;
     private DirectionPresenter presenter;
     private Marker mPositionMarker;
+    private Location myLocation;
+    private LatLng myLatlang, destinationLatlang;
+    private DeliveredStationLocation stationLocation;
+    //    private List<Marker> markers;
+    private PolylineOptions polylineOptions;
+    private Polyline polyline;
+    private SessionManager sessionManager;
 
 
     @Override
@@ -263,71 +271,27 @@ public class Dashboard extends AppCompatActivity
     }
 
     @Override
-    public void onLocationChanged(Location location) {
-        if (location == null)
+    public void onLocationChanged(Location l) {
+        if (l == null)
             return;
 
         if (mPositionMarker == null) {
 
+            myLocation = l;
+            myLatlang = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+
             MarkerOptions markerOption = new MarkerOptions()
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-//                    .icon(BitmapDescriptorFactory.fromBitmap(getMarkerBitmapFromView(R.mipmap.ic_person_black_24dp)))
-                    .position(new LatLng(location.getLatitude(), location
-                            .getLongitude()));
+                    .position(myLatlang);
 
             mPositionMarker = googleMap.addMarker(markerOption);
             mPositionMarker.setTag(-1);
         }
 
-        animateMarker(mPositionMarker, location); // Helper method for smooth
+        animateMarker(mPositionMarker, myLocation); // Helper method for smooth
         // animation
 
-        googleMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(location
-                .getLatitude(), location.getLongitude())));
-
-
-        double shortDistance = 0;
-        DeliveredStationLocation nearLocation = null;
-        LatLng myLatLang = new LatLng(location.getLatitude(), location.getLongitude());
-        LatLng destinationLatLang;
-
-        for (int i = 0; i < stationLocations.size(); i++) {
-            DeliveredStationLocation c = stationLocations.get(i);
-
-            double actualDistance = DistanceCalculator.getDistance(location.getLatitude(), location.getLongitude(),
-                    c.getLatitude(), c.getLongitude(), "K");
-
-            if (i == 0) {
-                shortDistance = actualDistance;
-                nearLocation = c;
-            } else {
-                if (actualDistance < shortDistance) {
-                    shortDistance = actualDistance;
-                    nearLocation = c;
-                }
-            }
-            Log.i("Distance", String.valueOf(actualDistance));
-        }
-        Log.i("ShortestDistance", String.valueOf(shortDistance));
-
-        destinationLatLang = new LatLng(nearLocation.getLatitude(), nearLocation.getLongitude());
-        //url for the data between origin and destination
-        String url = BasicUtilityMethods.getUrl(myLatLang, destinationLatLang);
-
-        if (BasicUtilityMethods.isNetworkOnline(this)) {
-            presenter.onGetPolyLineOptions(url);
-        } else {
-            Toast.makeText(getApplicationContext(), "Please enable your internet connection", Toast.LENGTH_SHORT).show();
-        }
-
-        //showing the destination marker
-        MarkerOptions markerOption = new MarkerOptions()
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                .position(destinationLatLang);
-
-        Marker m = googleMap.addMarker(markerOption);
-        m.setTag(nearLocation.getlId());
-        Log.i("location:", nearLocation.getLatitude() + "\n" + nearLocation.getLongitude());
+        googleMap.animateCamera(CameraUpdateFactory.newLatLng(myLatlang));
     }
 
     @Override
@@ -352,14 +316,41 @@ public class Dashboard extends AppCompatActivity
             @Override
             public boolean onMarkerClick(Marker marker) {
                 Integer tag = (Integer) marker.getTag();
+                destinationLatlang = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
+
                 if (tag != -1) {
-                    MyDialog d = new MyDialog(Dashboard.this, "", "", null);
-                    d.show();
+
+                    if (myLocation == null) {
+                        Toast.makeText(getApplicationContext(), "sorry location not found", Toast.LENGTH_SHORT).show();
+                    } else {
+                        String url = BasicUtilityMethods.getUrl(myLatlang, destinationLatlang);
+                        Log.i("URL::", url);
+                        if (BasicUtilityMethods.isNetworkOnline(Dashboard.this)) {
+                            for (DeliveredStationLocation d : stationLocations) {
+                                if (d.getlId() == tag) {
+                                    stationLocation = d;
+                                }
+                            }
+                            presenter.onGetPolyLineOptions(url);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Please enable your internet connection", Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
                 return true;
             }
         });
+        for (int i = 0; i < stationLocations.size(); i++) {
+            DeliveredStationLocation d = stationLocations.get(i);
+            LatLng l = new LatLng(d.getLatitude(), d.getLongitude());
+            MarkerOptions markerOption = new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                    .position(l);
+            Marker m = googleMap.addMarker(markerOption);
+            m.setTag(d.getlId());
 
+//            markers.add(m);
+        }
 
     }
 
@@ -387,6 +378,16 @@ public class Dashboard extends AppCompatActivity
         if (googleApiClient.isConnected()) {
             requestLocationupdate();
         }
+
+        if (polylineOptions != null) {
+            if (sessionManager.getPaymentDone()) {
+                if (polyline != null) {
+                    polyline.remove();
+                }
+                polyline = googleMap.addPolyline(polylineOptions);
+                sessionManager.clearPaymentDone();
+            }
+        }
     }
 
     @Override
@@ -398,7 +399,9 @@ public class Dashboard extends AppCompatActivity
 
     @Override
     public void onPolyLineOptionReceived(PolylineOptions polylineOptions,String distance,String duration) {
-        googleMap.addPolyline(polylineOptions);
+        MyDialog d = new MyDialog(Dashboard.this, distance, duration, stationLocation, MetaData.ORDER_TYPE_STATION);
+        d.show();
+        this.polylineOptions = polylineOptions;
     }
 
     private void animateMarker(final Marker marker, final Location location) {

@@ -6,6 +6,7 @@ import com.ronem.carwash.model.CarType;
 import com.ronem.carwash.model.DeliveredStationLocation;
 import com.ronem.carwash.model.NavItem;
 import com.ronem.carwash.model.PaymentMethod;
+import com.ronem.carwash.model.ServiceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,9 @@ public class MetaData {
     public static final String KEY_ADDRESS = "address";
     public static final String KEY_DISTANCE = "distance";
     public static final String KEY_DURATION = "duration";
+    public static final String KEY_ORDER_TYPE = "order_type";
+    public  static final String ORDER_TYPE_DELIVERD = "Delivered";
+    public  static final String ORDER_TYPE_STATION = "Station";
 
     public static NavItem[] getnavItems() {
         NavItem[] items = new NavItem[]{
@@ -62,8 +66,8 @@ public class MetaData {
         List<CarType> c = new ArrayList<>();
 
         c.add(new CarType(1, "Small", "35SR"));
-        c.add(new CarType(2, "Medium", "50SR"));
-        c.add(new CarType(3, "Large", "80SR"));
+        c.add(new CarType(2, "Large", "50SR"));
+        c.add(new CarType(3, "X-Large", "80SR"));
 
         return c;
     }
@@ -85,5 +89,14 @@ public class MetaData {
         p.add(new PaymentMethod(false, 3, "Coupon", R.mipmap.ic_card_giftcard_black_24dp, R.mipmap.ic_check_box_outline_blank_black_24dp));
         p.add(new PaymentMethod(false, 4, "Monthly Payment", R.mipmap.ic_perm_contact_calendar_black_24dp, R.mipmap.ic_check_box_outline_blank_black_24dp));
         return p;
+    }
+
+    public static List<ServiceType> getServiceType() {
+        List<ServiceType> s = new ArrayList<>();
+        s.add(new ServiceType("1", "Car wash", "20SR"));
+        s.add(new ServiceType("2", "Car Polishing", "100SR"));
+        s.add(new ServiceType("3", "Car Maintenance", "30SR"));
+        s.add(new ServiceType("4", "Car Tyre Repair", "20SR"));
+        return s;
     }
 }

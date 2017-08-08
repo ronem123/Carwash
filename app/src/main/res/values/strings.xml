@@ -39,11 +39,14 @@
     <string name="make_payment">make Payment</string>
     <string name="price">35SR</string>
     <string name="time">PM15:25 25/08/17</string>
-    <string name="small">Vehicle Type : Small</string>
+    <string name="vehicle_type_s">Vehicle Type : %s</string>
+    <string name="service_type_s">Service Type : %s</string>
     <string name="text">text</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="update">Update</string>
     <string name="car_washer_item">Car washer</string>
     <string name="delivered">Delivered</string>
     <string name="station">Stations</string>
+    <string name="service_type">Service Type</string>
+    <string name="payed_amount">Payed Amount : %s</string>
 </resources>
