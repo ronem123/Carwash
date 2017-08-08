@@ -1,7 +1,9 @@
 package com.ronem.carwash.view;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -145,13 +147,32 @@ public class ShowDetailActivity extends AppCompatActivity
     @OnClick(R.id.btn_make_payment)
     public void onBtnMakePaymentClicked() {
         price = carType.getPrice();
-        String totalPrice = "Car Price:" + price + "tService charge" + serviceTye.getServiceCharge();
-        String add = address.getAddress();
+        final String totalPrice = "Car Price : " + price + "   Service charge : " + serviceTye.getServiceCharge();
+        final String add = address.getAddress();
         if (!TextUtils.isEmpty(paymentMethod)) {
-            sessionManager.setPaymentDone();
-            Order order = new Order(1, orderType, deliveredStationLocation.getCarWasher(), "", deliveredStationLocation.getContact(), add, carType.getType(), paymentMethod, totalPrice + "", serviceTye.getServiceType());
-            order.save();
-            onBackPressed();
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("Are you sure you want to make payment ?");
+            builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                    sessionManager.setPaymentDone();
+                    Order order = new Order(1, orderType, deliveredStationLocation.getCarWasher(), "", deliveredStationLocation.getContact(), add, carType.getType(), paymentMethod, totalPrice + "", serviceTye.getServiceType());
+                    order.save();
+                    onBackPressed();
+                }
+            });
+
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
 
         } else {
             Toast.makeText(getApplicationContext(), "Please select at least one payment method", Toast.LENGTH_SHORT).show();
