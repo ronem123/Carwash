@@ -10,6 +10,11 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [manifestApplicationId: "${applicationId}",
+                                onesignal_app_id: "3db3e758-5666-4e77-af13-43f1bff5f9f0",
+                                onesignal_google_project_number: "916797489622"]
+
     }
     buildTypes {
         release {
@@ -55,5 +60,9 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:10.2.4'
 
     compile 'com.michaelpardo:activeandroid:3.1.0-SNAPSHOT'
+    compile 'com.google.android.gms:play-services-auth:10.2.4'
+    compile 'com.google.android.gms:play-services-gcm:10.2.4'
+    compile 'com.onesignal:OneSignal:2.+@aar'
+
 }
 apply plugin: 'com.google.gms.google-services'
