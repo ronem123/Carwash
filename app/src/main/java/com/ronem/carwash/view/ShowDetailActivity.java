@@ -32,6 +32,7 @@ import com.ronem.carwash.utils.RecyclerItemClickListener;
 import com.ronem.carwash.utils.SessionManager;
 
 import java.util.List;
+import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -149,7 +150,9 @@ public class ShowDetailActivity extends AppCompatActivity
         String add = address.getAddress();
         if (!TextUtils.isEmpty(paymentMethod)) {
             sessionManager.setPaymentDone();
-            Order order = new Order(1, orderType, deliveredStationLocation.getCarWasher(), "", deliveredStationLocation.getContact(), add, carType.getType(), paymentMethod, totalPrice + "", serviceTye.getServiceType());
+            Random rand = new Random();
+            int orderId = rand.nextInt(5);
+            Order order = new Order(orderId, orderType, deliveredStationLocation.getCarWasher(), "", deliveredStationLocation.getContact(), add, carType.getType(), paymentMethod, totalPrice + "", serviceTye.getServiceType(), sessionManager.getLatitude(), sessionManager.getLongitude(), MetaData.ORDER_STATUS_LIVE);
             order.save();
             onBackPressed();
 

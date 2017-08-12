@@ -102,7 +102,7 @@ public class EditProfileActivity extends AppCompatActivity implements AdapterVie
         } else if (carType.getType().equals(MetaData.SELECT_CAR_TYPE)) {
             showMessage(MetaData.MSG_SELECT_CAR_TYPE);
         } else {
-            sessionManager.setLogin(fullName, email, "", contact, carType.getId());
+//            sessionManager.setLogin(fullName, email, "", contact, carType.getId());
             onBackPressed();
         }
     }

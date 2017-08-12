@@ -64,6 +64,19 @@ public class SessionManager {
         return sharedPreferences.getInt(KEY_CAR_TYPE, 0);
     }
 
+    public String getUserType() {
+        return sharedPreferences.getString(KEY_USER_TYPE, "");
+    }
+
+    public String getLatitude() {
+        return sharedPreferences.getString(KEY_LATI, "0.0");
+
+    }
+
+    public String getLongitude() {
+        return sharedPreferences.getString(KEY_LONGI, "0.0");
+    }
+
     public boolean isLoggedIn() {
         return sharedPreferences.getBoolean(IS_LOGIN, false);
     }

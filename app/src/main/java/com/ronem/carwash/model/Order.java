@@ -5,6 +5,7 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
+import com.activeandroid.query.Update;
 
 import java.util.List;
 
@@ -34,9 +35,18 @@ public class Order extends Model {
     public String payedAmount;
     @Column(name = "service")
     public String service;
+    @Column(name = "latitude")
+    public String latitude;
+    @Column(name = "longitude")
+    public String longitue;
+    @Column(name = "status")
+    public String status;
 
-    public Order(){super();}
-    public Order(int orderId, String orderType, String carwarsherName, String carwasherEmail, String carWasherContact, String myAddress,String carType, String paymentMethod, String payedAmount, String service) {
+    public Order() {
+        super();
+    }
+
+    public Order(int orderId, String orderType, String carwarsherName, String carwasherEmail, String carWasherContact, String myAddress, String carType, String paymentMethod, String payedAmount, String service, String latitude, String longitude, String status) {
         this.orderId = orderId;
         this.orderType = orderType;
         this.carwarsherName = carwarsherName;
@@ -47,6 +57,9 @@ public class Order extends Model {
         this.paymentMethod = paymentMethod;
         this.payedAmount = payedAmount;
         this.service = service;
+        this.latitude = latitude;
+        this.longitue = longitude;
+        this.status = status;
     }
 
     public int getOrderId() {
@@ -129,12 +142,50 @@ public class Order extends Model {
         this.service = service;
     }
 
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitue() {
+        return longitue;
+    }
+
+    public void setLongitue(String longitue) {
+        this.longitue = longitue;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public static List<Order> getOrders() {
         return new Select().from(Order.class).execute();
     }
 
     public static void clearOrders() {
         new Delete().from(Order.class).execute();
+    }
+
+    public static void updateOrderStatus(int orderId, String status) {
+        new Update(Order.class)
+                .set("status =?", status)
+                .where("order_id=?", orderId)
+                .execute();
+    }
+
+    public static List<Order> getOrders(String status) {
+        return new Select()
+                .from(Order.class)
+                .where("status=?", status)
+                .execute();
     }
 
 }

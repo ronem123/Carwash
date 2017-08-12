@@ -51,4 +51,7 @@
     <string name="payed_amount">Payed Amount : %s</string>
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
+    <string name="customer_name">MR. Ram Mandal</string>
+    <string name="accept_order">Accept order</string>
+    <string name="ignore_order">Ignore order</string>
 </resources>

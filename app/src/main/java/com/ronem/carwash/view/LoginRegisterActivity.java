@@ -2,12 +2,12 @@ package com.ronem.carwash.view;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ListFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -22,14 +22,18 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.ronem.carwash.R;
-import com.ronem.carwash.adapters.CarTypeAdapter;
 import com.ronem.carwash.adapters.CarTypeAdapterRegister;
 import com.ronem.carwash.model.CarType;
 import com.ronem.carwash.utils.BasicUtilityMethods;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.SessionManager;
-import com.ronem.carwash.view.dashboard.Dashboard;
+import com.ronem.carwash.view.dashboard.ClientDashboard;
+import com.ronem.carwash.view.dashboard.CustomerDashboard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +48,10 @@ import butterknife.OnClick;
 
 public class LoginRegisterActivity
         extends AppCompatActivity
-        /*implements AdapterView.OnItemSelectedListener*/ {
+        implements AdapterView.OnItemSelectedListener,
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        com.google.android.gms.location.LocationListener {
     @Bind(R.id.create_account_layout)
     LinearLayout createAccLayout;
     @Bind(R.id.login_layout)
@@ -62,6 +69,10 @@ public class LoginRegisterActivity
     EditText edtContact;
     @Bind(R.id.create_account_spinner_car_type)
     Spinner spinnerCarType;
+    @Bind(R.id.edt_latitude)
+    EditText edtlatitude;
+    @Bind(R.id.edt_longitude)
+    EditText edtLongitude;
 
     @Bind(R.id.radio_group)
     RadioGroup radioGroup;
@@ -81,8 +92,11 @@ public class LoginRegisterActivity
     private final int PERMISSION_REQUEST_CODE = 100;
     private List<CarType> carTypes;
     private CarType carType;
+    private String salesLati, salesLongi;
 
-    private String latitude, longitude;
+    private GoogleApiClient googleApiClient;
+    private LocationRequest locationRequest;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -115,11 +129,27 @@ public class LoginRegisterActivity
                 } else if (i == R.id.radio_client) {
                     if (radioSalesMan.isChecked()) {
                         latLngLayout.setVisibility(View.GONE);
-                        BasicUtilityMethods.checkifGPSisEnabled(LoginRegisterActivity.this);
+                        if (!BasicUtilityMethods.isGPSEnabled(LoginRegisterActivity.this)) {
+                            BasicUtilityMethods.openGPSSettingDialog(LoginRegisterActivity.this);
+                        }
                     }
                 }
             }
         });
+
+        createGoogleApiClient();
+        googleApiClient.connect();
+
+        locationRequest = BasicUtilityMethods.createLocationRequest();
+    }
+
+
+    private void createGoogleApiClient() {
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
     }
 
     private void configureSCarTypeSpinner() {
@@ -144,6 +174,8 @@ public class LoginRegisterActivity
         String password = edtPassword.getText().toString();
         String confirmPassword = edtConfirmPassword.getText().toString();
         String contact = edtContact.getText().toString();
+        String latitude = edtlatitude.getText().toString();
+        String longitude = edtLongitude.getText().toString();
 
 
         if (TextUtils.isEmpty(fullName)
@@ -152,17 +184,39 @@ public class LoginRegisterActivity
                 || TextUtils.isEmpty(confirmPassword)
                 || TextUtils.isEmpty(contact)) {
             showMessage(MetaData.MSG_EMPTY_FIELD);
-        }
-        else if (carType.getType().equals(MetaData.SELECT_CAR_TYPE)) {
+        } else if (carType.getType().equals(MetaData.SELECT_CAR_TYPE)) {
             showMessage(MetaData.MSG_SELECT_CAR_TYPE);
-        }
-
-        else if (!password.equals(confirmPassword)) {
+        } else if (!password.equals(confirmPassword)) {
             showMessage(MetaData.MSG_PASSWORD_NOT_MATCHED);
         } else {
-            sessionManager.setLogin(fullName, email, password, contact, carType.getId());
+            if (radioStation.isChecked()) {
+                if (TextUtils.isEmpty(latitude)
+                        && TextUtils.isEmpty(longitude)) {
+                    showMessage(MetaData.MSG_EMPTY_FIELD);
+                } else {
+                    //login
+                    if (BasicUtilityMethods.isGPSEnabled(this)) {
+                        sessionManager.setLogin(MetaData.USER_TYPE_CUSTOMER, fullName, email, password, contact, carType.getId(), latitude, longitude);
+                        launchDashboard();
+                    } else {
+                        BasicUtilityMethods.openGPSSettingDialog(this);
+                    }
+                }
+            } else if (radioSalesMan.isChecked()) {
 
-            checkRunTimePermissionLaunchDashboard();
+                if (BasicUtilityMethods.isGPSEnabled(this)) {
+                    if (TextUtils.isEmpty(salesLati) && TextUtils.isEmpty(salesLongi)) {
+                        showMessage("Please wait accessing your location");
+                    } else {
+                        sessionManager.setLogin(MetaData.USER_TYPE_SALESMAN, fullName, email, password, contact, carType.getId(), salesLati, salesLongi);
+                        launchDashboard();
+                    }
+                } else {
+                    BasicUtilityMethods.openGPSSettingDialog(this);
+                }
+
+            }
+
         }
     }
 
@@ -173,15 +227,15 @@ public class LoginRegisterActivity
             requestPermissions(new String[]{
                     android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION
             }, PERMISSION_REQUEST_CODE);
-        } else {
-            launchDashboard();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            launchDashboard();
+            if (!BasicUtilityMethods.isGPSEnabled(this)) {
+                BasicUtilityMethods.openGPSSettingDialog(this);
+            }
         } else {
             checkRunTimePermissionLaunchDashboard();
         }
@@ -223,7 +277,13 @@ public class LoginRegisterActivity
     }
 
     private void launchDashboard() {
-        Intent i = new Intent(this, Dashboard.class);
+        Intent i;
+        if (sessionManager.getUserType().equals(MetaData.USER_TYPE_CUSTOMER)) {
+            i = new Intent(this, CustomerDashboard.class);
+        } else {
+            i = new Intent(this, ClientDashboard.class);
+        }
+
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }
@@ -241,5 +301,39 @@ public class LoginRegisterActivity
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
 
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location == null)
+            return;
+        salesLati = String.valueOf(location.getLatitude());
+        salesLongi = String.valueOf(location.getLongitude());
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        requestLocationupdate();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @SuppressWarnings("MissingPermission")
+    private void requestLocationupdate() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checkRunTimePermissionLaunchDashboard();
     }
 }
