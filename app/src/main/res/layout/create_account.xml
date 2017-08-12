@@ -7,7 +7,8 @@
 
     <com.ronem.carwash.view.ChosenTextView
         style="@style/head_title"
-        android:text="@string/create_account" />
+        android:text="@string/create_account"
+        android:visibility="gone" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -26,7 +27,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@mipmap/ic_person_add_white_48dp" />
+                android:src="@mipmap/ic_person_add_white_48dp"
+                android:visibility="gone" />
 
             <EditText
                 android:id="@+id/edt_full_name"
@@ -61,28 +63,66 @@
                 android:drawableLeft="@mipmap/ic_stay_current_portrait_black_24dp"
                 android:hint="@string/contact" />
 
-            <LinearLayout
+            <RadioGroup
+                android:id="@+id/radio_group"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_40sdp"
-                android:background="@color/color_white"
                 android:layout_marginTop="@dimen/_20sdp"
+                android:background="@color/color_white"
                 android:orientation="horizontal"
-                android:layout_marginBottom="@dimen/_8sdp"
-                android:paddingLeft="@dimen/_12sdp">
+                android:paddingLeft="@dimen/_10sdp">
 
-                <ImageView
+                <RadioButton
+                    android:id="@+id/radio_customer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@mipmap/ic_directions_car_white_24dp"
-                    android:tint="@color/color_login" />
+                    android:padding="@dimen/_5sdp"
+                    android:text="Stations"
+                    android:textColor="@color/color_grey"
+                    android:textSize="@dimen/_12sdp" />
 
-                <Spinner
-                    android:id="@+id/create_account_spinner_car_type"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@color/color_white"
-                    android:layout_marginLeft="@dimen/_5sdp" />
+                <RadioButton
+                    android:id="@+id/radio_client"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_25sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:text="Salesman"
+                    android:textColor="@color/color_grey"
+                    android:textSize="@dimen/_12sdp" />
+            </RadioGroup>
+
+            <LinearLayout
+                android:id="@+id/lat_long_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/_5sdp"
+                android:paddingRight="@dimen/_5sdp"
+                android:visibility="gone">
+
+                <EditText
+                    android:id="@+id/edt_latitude"
+                    style="@style/edit_text_style"
+                    android:layout_width="0dp"
+                    android:layout_marginRight="@dimen/_5sdp"
+                    android:layout_marginTop="0dp"
+                    android:layout_weight="1"
+                    android:hint="@string/latitude"
+                    android:inputType="numberDecimal" />
+
+                <EditText
+                    android:id="@+id/edt_longitude"
+                    style="@style/edit_text_style"
+                    android:layout_width="0dp"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_marginTop="0dp"
+                    android:layout_weight="1"
+                    android:hint="@string/longitude"
+                    android:inputType="numberDecimal" />
             </LinearLayout>
 
             <Button

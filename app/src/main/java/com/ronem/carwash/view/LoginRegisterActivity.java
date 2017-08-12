@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
@@ -16,6 +17,8 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -23,6 +26,7 @@ import com.ronem.carwash.R;
 import com.ronem.carwash.adapters.CarTypeAdapter;
 import com.ronem.carwash.adapters.CarTypeAdapterRegister;
 import com.ronem.carwash.model.CarType;
+import com.ronem.carwash.utils.BasicUtilityMethods;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.SessionManager;
 import com.ronem.carwash.view.dashboard.Dashboard;
@@ -38,7 +42,9 @@ import butterknife.OnClick;
  * Created by ram on 7/31/17.
  */
 
-public class LoginRegisterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class LoginRegisterActivity
+        extends AppCompatActivity
+        /*implements AdapterView.OnItemSelectedListener*/ {
     @Bind(R.id.create_account_layout)
     LinearLayout createAccLayout;
     @Bind(R.id.login_layout)
@@ -57,6 +63,15 @@ public class LoginRegisterActivity extends AppCompatActivity implements AdapterV
     @Bind(R.id.create_account_spinner_car_type)
     Spinner spinnerCarType;
 
+    @Bind(R.id.radio_group)
+    RadioGroup radioGroup;
+    @Bind(R.id.radio_customer)
+    RadioButton radioStation;
+    @Bind(R.id.radio_client)
+    RadioButton radioSalesMan;
+    @Bind(R.id.lat_long_layout)
+    LinearLayout latLngLayout;
+
     @Bind(R.id.edt_login_email)
     EditText edtLoginEmail;
     @Bind(R.id.edt_login_password)
@@ -66,6 +81,8 @@ public class LoginRegisterActivity extends AppCompatActivity implements AdapterV
     private final int PERMISSION_REQUEST_CODE = 100;
     private List<CarType> carTypes;
     private CarType carType;
+
+    private String latitude, longitude;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,6 +103,23 @@ public class LoginRegisterActivity extends AppCompatActivity implements AdapterV
         }
 
         configureSCarTypeSpinner();
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
+                if (i == R.id.radio_customer) {
+                    if (radioStation.isChecked()) {
+                        latLngLayout.setVisibility(View.VISIBLE);
+                    }
+                } else if (i == R.id.radio_client) {
+                    if (radioSalesMan.isChecked()) {
+                        latLngLayout.setVisibility(View.GONE);
+                        BasicUtilityMethods.checkifGPSisEnabled(LoginRegisterActivity.this);
+                    }
+                }
+            }
+        });
     }
 
     private void configureSCarTypeSpinner() {
@@ -111,18 +145,22 @@ public class LoginRegisterActivity extends AppCompatActivity implements AdapterV
         String confirmPassword = edtConfirmPassword.getText().toString();
         String contact = edtContact.getText().toString();
 
+
         if (TextUtils.isEmpty(fullName)
                 || TextUtils.isEmpty(email)
                 || TextUtils.isEmpty(password)
                 || TextUtils.isEmpty(confirmPassword)
                 || TextUtils.isEmpty(contact)) {
             showMessage(MetaData.MSG_EMPTY_FIELD);
-        } else if (carType.getType().equals(MetaData.SELECT_CAR_TYPE)) {
+        }
+        else if (carType.getType().equals(MetaData.SELECT_CAR_TYPE)) {
             showMessage(MetaData.MSG_SELECT_CAR_TYPE);
-        } else if (!password.equals(confirmPassword)) {
+        }
+
+        else if (!password.equals(confirmPassword)) {
             showMessage(MetaData.MSG_PASSWORD_NOT_MATCHED);
         } else {
-            sessionManager.setLogin(fullName, email, password, contact,carType.getId());
+            sessionManager.setLogin(fullName, email, password, contact, carType.getId());
 
             checkRunTimePermissionLaunchDashboard();
         }

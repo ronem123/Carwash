@@ -49,4 +49,6 @@
     <string name="station">Stations</string>
     <string name="service_type">Service Type</string>
     <string name="payed_amount">Payed Amount : %s</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
 </resources>

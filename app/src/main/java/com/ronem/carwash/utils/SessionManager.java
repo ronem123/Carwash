@@ -13,11 +13,14 @@ public class SessionManager {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private final String IS_LOGIN = "islogin";
+    private final String KEY_USER_TYPE = "user_type";
     private final String KEY_FULL_NAME = "full_name";
     private final String KEY_EMAIL = "email";
     private final String KEY_PASSWORD = "password";
     private final String KEY_CONTACT = "contact";
     private final String KEY_CAR_TYPE = "car_type";
+    private final String KEY_LATI = "latitude";
+    private final String KEY_LONGI = "longi";
 
     private final String KEY_PAYMENT_DONE = "payment_done";
 
@@ -25,15 +28,18 @@ public class SessionManager {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public void setLogin(String fullname, String email, String password, String contact, int carType) {
+    public void setLogin(String userType, String fullname, String email, String password, String contact, int carType, String lat, String longi) {
         editor = sharedPreferences.edit();
         editor.putString(KEY_FULL_NAME, fullname);
         editor.putString(KEY_EMAIL, email);
         if (!TextUtils.isEmpty(password)) {
             editor.putString(KEY_PASSWORD, password);
         }
+        editor.putString(KEY_USER_TYPE, userType);
         editor.putString(KEY_CONTACT, contact);
         editor.putInt(KEY_CAR_TYPE, carType);
+        editor.putString(KEY_LATI, lat);
+        editor.putString(KEY_LONGI, longi);
         editor.putBoolean(IS_LOGIN, true);
         editor.apply();
     }
