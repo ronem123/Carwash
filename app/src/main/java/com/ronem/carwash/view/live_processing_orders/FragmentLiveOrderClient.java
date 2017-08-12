@@ -48,6 +48,6 @@ public class FragmentLiveOrderClient extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         orders = Order.getOrders(MetaData.ORDER_STATUS_LIVE);
-        recyclerView.setAdapter(new OrderAdapterClient(orders, true));
+        recyclerView.setAdapter(new OrderAdapterClient(orders, MetaData.ORDER_STATUS_LIVE));
     }
 }

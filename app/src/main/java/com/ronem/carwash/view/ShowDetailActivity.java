@@ -152,7 +152,12 @@ public class ShowDetailActivity extends AppCompatActivity
             sessionManager.setPaymentDone();
             Random rand = new Random();
             int orderId = rand.nextInt(5);
-            Order order = new Order(orderId, orderType, deliveredStationLocation.getCarWasher(), "", deliveredStationLocation.getContact(), add, carType.getType(), paymentMethod, totalPrice + "", serviceTye.getServiceType(), sessionManager.getLatitude(), sessionManager.getLongitude(), MetaData.ORDER_STATUS_LIVE);
+            Order order =
+                    new Order(orderId, orderType, deliveredStationLocation.getCarWasher(), "",
+                            deliveredStationLocation.getContact(), add, carType.getType(),
+                            paymentMethod, totalPrice + "", serviceTye.getServiceType(),
+                            sessionManager.getLatitude(), sessionManager.getLongitude(),
+                            MetaData.ORDER_STATUS_LIVE,sessionManager.getFullName());
             order.save();
             onBackPressed();
 

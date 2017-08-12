@@ -54,4 +54,6 @@
     <string name="customer_name">MR. Ram Mandal</string>
     <string name="accept_order">Accept order</string>
     <string name="ignore_order">Ignore order</string>
+    <string name="view_detail">View Detail</string>
+    <string name="complete_order">Change to Compelete</string>
 </resources>

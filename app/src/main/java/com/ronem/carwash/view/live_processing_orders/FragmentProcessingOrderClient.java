@@ -39,12 +39,6 @@ public class FragmentProcessingOrderClient extends Fragment {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.hasFixedSize();
-        recyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(RecyclerView recyclerView, View view, int position) {
-
-            }
-        }));
         return root;
     }
 
@@ -52,6 +46,6 @@ public class FragmentProcessingOrderClient extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         orders = Order.getOrders(MetaData.ORDER_STATUS_PROCESSING);
-        recyclerView.setAdapter(new OrderAdapterClient(orders, false));
+        recyclerView.setAdapter(new OrderAdapterClient(orders, MetaData.ORDER_STATUS_PROCESSING));
     }
 }

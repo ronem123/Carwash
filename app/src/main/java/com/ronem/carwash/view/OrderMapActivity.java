@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
@@ -32,14 +31,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ronem.carwash.R;
-import com.ronem.carwash.model.DeliveredStationLocation;
 import com.ronem.carwash.utils.BasicUtilityMethods;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.SessionManager;
 import com.ronem.carwash.view.dashboard.DirectionAdView;
 import com.ronem.carwash.view.dashboard.DirectionPresenter;
 import com.ronem.carwash.view.dashboard.DirectionPresenterImpl;
-import com.ronem.carwash.view.delivered.DeliveredActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -152,6 +149,9 @@ public class OrderMapActivity extends AppCompatActivity implements OnMapReadyCal
         myLocation = l;
         myLatlang = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
 
+        if (mPositionMarker != null) {
+            mPositionMarker.remove();
+        }
         MarkerOptions markerOption = new MarkerOptions()
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
                 .position(myLatlang);
@@ -205,7 +205,10 @@ public class OrderMapActivity extends AppCompatActivity implements OnMapReadyCal
     @Override
     public void onPolyLineOptionReceived(PolylineOptions polylineOptions, String distance, String duration) {
         this.polylineOptions = polylineOptions;
-        googleMap.addPolyline(polylineOptions);
+        if (polyline != null) {
+            polyline.remove();
+        }
+        polyline = googleMap.addPolyline(polylineOptions);
     }
 
     @Override

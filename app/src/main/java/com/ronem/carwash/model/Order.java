@@ -41,12 +41,16 @@ public class Order extends Model {
     public String longitue;
     @Column(name = "status")
     public String status;
+    @Column(name = "customer_name")
+    public String customerName;
 
     public Order() {
         super();
     }
 
-    public Order(int orderId, String orderType, String carwarsherName, String carwasherEmail, String carWasherContact, String myAddress, String carType, String paymentMethod, String payedAmount, String service, String latitude, String longitude, String status) {
+    public Order(int orderId, String orderType, String carwarsherName, String carwasherEmail,
+                 String carWasherContact, String myAddress, String carType, String paymentMethod,
+                 String payedAmount, String service, String latitude, String longitude, String status,String customerName) {
         this.orderId = orderId;
         this.orderType = orderType;
         this.carwarsherName = carwarsherName;
@@ -60,6 +64,7 @@ public class Order extends Model {
         this.latitude = latitude;
         this.longitue = longitude;
         this.status = status;
+        this.customerName = customerName;
     }
 
     public int getOrderId() {
@@ -166,6 +171,14 @@ public class Order extends Model {
         this.status = status;
     }
 
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
     public static List<Order> getOrders() {
         return new Select().from(Order.class).execute();
     }
@@ -185,6 +198,13 @@ public class Order extends Model {
         return new Select()
                 .from(Order.class)
                 .where("status=?", status)
+                .execute();
+    }
+
+    public static void remove(int orderId) {
+        new Delete()
+                .from(Order.class)
+                .where("order_id=?", orderId)
                 .execute();
     }
 
