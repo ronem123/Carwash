@@ -190,7 +190,7 @@ public class OrderMapActivity extends AppCompatActivity implements OnMapReadyCal
         }
 
         googleMap.setMyLocationEnabled(false);
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(MetaData.MAP_ZOOM));
 
         //sprinkle markers
 

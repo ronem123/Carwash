@@ -102,7 +102,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:padding="@dimen/_5sdp"
-                    android:text="Stations"
+                    android:text="User"
                     android:textColor="@color/color_grey"
                     android:textSize="@dimen/_12sdp" />
 

@@ -17,6 +17,7 @@ import java.util.List;
 
 public class MetaData {
 
+    public static final int MAP_ZOOM = 20;
     public static final String MSG_EMPTY_FIELD = "Field should not be empty";
     public static final String MSG_PASSWORD_NOT_MATCHED = "Sorry ! But password not matched";
     public static final String MSG_EMAIL_NOT_FOUND = "Sorry But This email not found in our database";

@@ -122,17 +122,8 @@ public class LoginRegisterActivity
 
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-                if (i == R.id.radio_customer) {
-                    if (radioStation.isChecked()) {
-                        latLngLayout.setVisibility(View.VISIBLE);
-                    }
-                } else if (i == R.id.radio_client) {
-                    if (radioSalesMan.isChecked()) {
-                        latLngLayout.setVisibility(View.GONE);
-                        if (!BasicUtilityMethods.isGPSEnabled(LoginRegisterActivity.this)) {
-                            BasicUtilityMethods.openGPSSettingDialog(LoginRegisterActivity.this);
-                        }
-                    }
+                if (!BasicUtilityMethods.isGPSEnabled(LoginRegisterActivity.this)) {
+                    BasicUtilityMethods.openGPSSettingDialog(LoginRegisterActivity.this);
                 }
             }
         });
@@ -190,17 +181,15 @@ public class LoginRegisterActivity
             showMessage(MetaData.MSG_PASSWORD_NOT_MATCHED);
         } else {
             if (radioStation.isChecked()) {
-                if (TextUtils.isEmpty(latitude)
-                        && TextUtils.isEmpty(longitude)) {
-                    showMessage(MetaData.MSG_EMPTY_FIELD);
-                } else {
-                    //login
-                    if (BasicUtilityMethods.isGPSEnabled(this)) {
-                        sessionManager.setLogin(MetaData.USER_TYPE_CUSTOMER, fullName, email, password, contact, carType.getId(), latitude, longitude);
-                        launchDashboard();
+                if (BasicUtilityMethods.isGPSEnabled(this)) {
+                    if (TextUtils.isEmpty(salesLati) && TextUtils.isEmpty(salesLongi)) {
+                        showMessage("Please wait accessing your location");
                     } else {
-                        BasicUtilityMethods.openGPSSettingDialog(this);
+                        sessionManager.setLogin(MetaData.USER_TYPE_CUSTOMER, fullName, email, password, contact, carType.getId(), salesLati, salesLongi);
+                        launchDashboard();
                     }
+                } else {
+                    BasicUtilityMethods.openGPSSettingDialog(this);
                 }
             } else if (radioSalesMan.isChecked()) {
 
@@ -215,6 +204,8 @@ public class LoginRegisterActivity
                     BasicUtilityMethods.openGPSSettingDialog(this);
                 }
 
+            }else{
+                showMessage("Please select either user or salesman");
             }
 
         }

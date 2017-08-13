@@ -186,7 +186,7 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
         }
 
         googleMap.setMyLocationEnabled(false);
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(MetaData.MAP_ZOOM));
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
