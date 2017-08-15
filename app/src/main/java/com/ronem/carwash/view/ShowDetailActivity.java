@@ -150,20 +150,26 @@ public class ShowDetailActivity extends AppCompatActivity
         String add = address.getAddress();
         if (!TextUtils.isEmpty(paymentMethod)) {
             sessionManager.setPaymentDone();
-            Random rand = new Random();
-            int orderId = rand.nextInt(5);
-            Order order =
-                    new Order(orderId, orderType, deliveredStationLocation.getCarWasher(), "",
-                            deliveredStationLocation.getContact(), add, carType.getType(),
-                            paymentMethod, totalPrice + "", serviceTye.getServiceType(),
-                            sessionManager.getLatitude(), sessionManager.getLongitude(),
-                            MetaData.ORDER_STATUS_LIVE,sessionManager.getFullName());
+
+            Order order = new Order(getOrderId(), orderType, deliveredStationLocation.getCarWasher(), "",
+                    deliveredStationLocation.getContact(), add, carType.getType(),
+                    paymentMethod, totalPrice + "", serviceTye.getServiceType(),
+                    sessionManager.getLatitude(), sessionManager.getLongitude(),
+                    MetaData.ORDER_STATUS_LIVE, sessionManager.getFullName());
             order.save();
             onBackPressed();
 
         } else {
             Toast.makeText(getApplicationContext(), "Please select at least one payment method", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private int getOrderId() {
+        int counter = sessionManager.getLatestCounter();
+        counter++;
+        sessionManager.setOrderCounter(counter);
+
+        return counter;
     }
 
     @Override

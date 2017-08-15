@@ -22,6 +22,8 @@ public class SessionManager {
     private final String KEY_LATI = "latitude";
     private final String KEY_LONGI = "longi";
 
+    private final String KEY_COUNTER = "counter";
+
     private final String KEY_PAYMENT_DONE = "payment_done";
 
     public SessionManager(Context context) {
@@ -103,5 +105,16 @@ public class SessionManager {
     public void clearPaymentDone() {
         editor = sharedPreferences.edit();
         editor.putBoolean(KEY_PAYMENT_DONE, false).apply();
+    }
+
+
+    //update the counter of order
+    public void setOrderCounter(int counter) {
+        editor = sharedPreferences.edit();
+        editor.putInt(KEY_COUNTER, counter).apply();
+    }
+
+    public int getLatestCounter() {
+        return sharedPreferences.getInt(KEY_COUNTER, 0);
     }
 }

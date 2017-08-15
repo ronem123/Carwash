@@ -14,12 +14,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -27,16 +25,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.ronem.carwash.R;
-import com.ronem.carwash.adapters.CarTypeAdapterRegister;
-import com.ronem.carwash.model.CarType;
 import com.ronem.carwash.utils.BasicUtilityMethods;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.SessionManager;
 import com.ronem.carwash.view.dashboard.ClientDashboard;
-import com.ronem.carwash.view.dashboard.CustomerDashboard;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,8 +39,7 @@ import butterknife.OnClick;
  */
 
 public class LoginRegisterClientActivity extends AppCompatActivity
-        implements AdapterView.OnItemSelectedListener,
-        GoogleApiClient.ConnectionCallbacks,
+        implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener {
     @Bind(R.id.create_account_layout)
@@ -66,12 +57,12 @@ public class LoginRegisterClientActivity extends AppCompatActivity
     EditText edtConfirmPassword;
     @Bind(R.id.edt_contact)
     EditText edtContact;
-    @Bind(R.id.create_account_spinner_car_type)
-    Spinner spinnerCarType;
     @Bind(R.id.edt_latitude)
     EditText edtlatitude;
     @Bind(R.id.edt_longitude)
     EditText edtLongitude;
+    @Bind(R.id.car_type_layout)
+    LinearLayout carTypeLayout;
 
     @Bind(R.id.radio_group)
     RadioGroup radioGroup;
@@ -89,8 +80,6 @@ public class LoginRegisterClientActivity extends AppCompatActivity
 
     private SessionManager sessionManager;
     private final int PERMISSION_REQUEST_CODE = 100;
-    private List<CarType> carTypes;
-    private CarType carType;
     private String salesLati, salesLongi;
 
     private GoogleApiClient googleApiClient;
@@ -107,25 +96,19 @@ public class LoginRegisterClientActivity extends AppCompatActivity
 
         setContentView(R.layout.login_register_layout);
         ButterKnife.bind(this);
-        userType = getIntent().getStringExtra(MetaData.KEY_USER_TYPE);
-
 
         sessionManager = new SessionManager(this);
-        if (sessionManager.isLoggedIn()) {
-            launchDashboard();
-        } else {
-            loginLayout.setVisibility(View.VISIBLE);
-            createAccLayout.setVisibility(View.GONE);
-        }
 
-        configureSCarTypeSpinner();
+        loginLayout.setVisibility(View.VISIBLE);
+        createAccLayout.setVisibility(View.GONE);
+        carTypeLayout.setVisibility(View.GONE);
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-                if (!BasicUtilityMethods.isGPSEnabled(LoginRegisterCustomerActivity.this)) {
-                    BasicUtilityMethods.openGPSSettingDialog(LoginRegisterCustomerActivity.this);
+                if (!BasicUtilityMethods.isGPSEnabled(LoginRegisterClientActivity.this)) {
+                    BasicUtilityMethods.openGPSSettingDialog(LoginRegisterClientActivity.this);
                 }
             }
         });
@@ -145,14 +128,6 @@ public class LoginRegisterClientActivity extends AppCompatActivity
                 .build();
     }
 
-    private void configureSCarTypeSpinner() {
-        carTypes = new ArrayList<>();
-        carTypes.add(new CarType(0, MetaData.SELECT_CAR_TYPE, ""));
-        carTypes.addAll(MetaData.getCarType());
-
-        spinnerCarType.setAdapter(new CarTypeAdapterRegister(carTypes, this));
-        spinnerCarType.setOnItemSelectedListener(this);
-    }
 
     @Override
     protected void onDestroy() {
@@ -167,8 +142,8 @@ public class LoginRegisterClientActivity extends AppCompatActivity
         String password = edtPassword.getText().toString();
         String confirmPassword = edtConfirmPassword.getText().toString();
         String contact = edtContact.getText().toString();
-        String latitude = edtlatitude.getText().toString();
-        String longitude = edtLongitude.getText().toString();
+//        String latitude = edtlatitude.getText().toString();
+//        String longitude = edtLongitude.getText().toString();
 
 
         if (TextUtils.isEmpty(fullName)
@@ -177,8 +152,6 @@ public class LoginRegisterClientActivity extends AppCompatActivity
                 || TextUtils.isEmpty(confirmPassword)
                 || TextUtils.isEmpty(contact)) {
             showMessage(MetaData.MSG_EMPTY_FIELD);
-        } else if (carType.getType().equals(MetaData.SELECT_CAR_TYPE)) {
-            showMessage(MetaData.MSG_SELECT_CAR_TYPE);
         } else if (!password.equals(confirmPassword)) {
             showMessage(MetaData.MSG_PASSWORD_NOT_MATCHED);
         } else {
@@ -187,7 +160,7 @@ public class LoginRegisterClientActivity extends AppCompatActivity
                     if (TextUtils.isEmpty(salesLati) && TextUtils.isEmpty(salesLongi)) {
                         showMessage("Please wait accessing your location");
                     } else {
-                        sessionManager.setLogin(MetaData.USER_TYPE_CUSTOMER, fullName, email, password, contact, carType.getId(), salesLati, salesLongi);
+                        sessionManager.setLogin(MetaData.USER_TYPE_CLIENT_STATION, fullName, email, password, contact, -1, salesLati, salesLongi);
                         launchDashboard();
                     }
                 } else {
@@ -199,7 +172,7 @@ public class LoginRegisterClientActivity extends AppCompatActivity
                     if (TextUtils.isEmpty(salesLati) && TextUtils.isEmpty(salesLongi)) {
                         showMessage("Please wait accessing your location");
                     } else {
-                        sessionManager.setLogin(MetaData.USER_TYPE_SALESMAN, fullName, email, password, contact, carType.getId(), salesLati, salesLongi);
+                        sessionManager.setLogin(MetaData.USER_TYPE_CLIENT_SALESMAN, fullName, email, password, contact, -1, salesLati, salesLongi);
                         launchDashboard();
                     }
                 } else {
@@ -270,13 +243,7 @@ public class LoginRegisterClientActivity extends AppCompatActivity
     }
 
     private void launchDashboard() {
-        Intent i;
-        if (sessionManager.getUserType().equals(MetaData.USER_TYPE_CUSTOMER)) {
-            i = new Intent(this, CustomerDashboard.class);
-        } else {
-            i = new Intent(this, ClientDashboard.class);
-        }
-
+        Intent i = new Intent(this, ClientDashboard.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }
@@ -285,16 +252,6 @@ public class LoginRegisterClientActivity extends AppCompatActivity
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        carType = carTypes.get(i);
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
 
     @Override
     public void onLocationChanged(Location location) {

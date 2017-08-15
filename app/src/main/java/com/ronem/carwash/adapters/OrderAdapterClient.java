@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 
 import com.ronem.carwash.R;
 import com.ronem.carwash.model.Order;
+import com.ronem.carwash.utils.EventBus;
+import com.ronem.carwash.utils.Events;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.view.OrderMapActivity;
 import com.ronem.carwash.viewholders.OrderLiveViewHolderClient;
@@ -80,6 +82,7 @@ public class OrderAdapterClient extends RecyclerView.Adapter<OrderLiveViewHolder
                         Order.updateOrderStatus(order.getOrderId(), MetaData.ORDER_STATUS_PROCESSING);
                         orders.remove(order);
                         notifyDataSetChanged();
+                        EventBus.post(new Events.ReloadEvent(true));
                     }
                 });
 

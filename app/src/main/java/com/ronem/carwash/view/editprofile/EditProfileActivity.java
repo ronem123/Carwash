@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -41,10 +42,13 @@ public class EditProfileActivity extends AppCompatActivity implements AdapterVie
     EditText edtContact;
     @Bind(R.id.create_account_spinner_car_type)
     Spinner spinnerCarType;
+    @Bind(R.id.car_type_layout)
+    LinearLayout carTypeLayout;
 
     private SessionManager sessionManager;
     private List<CarType> carTypes;
     private CarType carType;
+    private String userType;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +65,11 @@ public class EditProfileActivity extends AppCompatActivity implements AdapterVie
         edtContact.setText(sessionManager.getContact());
 
         configureSCarTypeSpinner();
+        userType = sessionManager.getUserType();
+
+        if (!userType.equals(MetaData.USER_TYPE_CUSTOMER)) {
+            carTypeLayout.setVisibility(View.GONE);
+        }
     }
 
     private void configureSCarTypeSpinner() {
@@ -99,10 +108,21 @@ public class EditProfileActivity extends AppCompatActivity implements AdapterVie
                 || TextUtils.isEmpty(email)
                 || TextUtils.isEmpty(contact)) {
             showMessage(MetaData.MSG_EMPTY_FIELD);
-        } else if (carType.getType().equals(MetaData.SELECT_CAR_TYPE)) {
-            showMessage(MetaData.MSG_SELECT_CAR_TYPE);
         } else {
-//            sessionManager.setLogin(fullName, email, "", contact, carType.getId());
+            if (userType.equals(MetaData.USER_TYPE_CUSTOMER)) {
+                if (carType.getType().equals(MetaData.SELECT_CAR_TYPE)) {
+                    showMessage(MetaData.MSG_SELECT_CAR_TYPE);
+                } else {
+                    sessionManager.setLogin(userType, fullName, email, sessionManager.getPassword(), contact, carType.getId(), sessionManager.getLatitude(), sessionManager.getLongitude());
+                    Toast.makeText(getApplicationContext(), "profile updated", Toast.LENGTH_SHORT).show();
+                    onBackPressed();
+                }
+            } else {
+                sessionManager.setLogin(userType, fullName, email, sessionManager.getPassword(), contact, sessionManager.getCarType(), sessionManager.getLatitude(), sessionManager.getLongitude());
+                Toast.makeText(getApplicationContext(), "profile updated", Toast.LENGTH_SHORT).show();
+                onBackPressed();
+            }
+
             onBackPressed();
         }
     }

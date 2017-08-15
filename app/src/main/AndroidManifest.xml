@@ -38,7 +38,13 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".view.UserTypeSelectionActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".view.login.LoginRegisterCustomerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.login.LoginRegisterClientActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.dashboard.CustomerDashboard"
