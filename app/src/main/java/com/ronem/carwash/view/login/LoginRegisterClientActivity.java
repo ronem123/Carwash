@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -76,6 +77,14 @@ public class LoginRegisterClientActivity extends AppCompatActivity
     @Bind(R.id.lat_long_layout)
     LinearLayout latLngLayout;
 
+    //client
+    @Bind(R.id.radio_group_login)
+    RadioGroup radioGroupLogin;
+    @Bind(R.id.radio_btn_station_login)
+    RadioButton radioBtnStationLogin;
+    @Bind(R.id.radio_btn_sales_man_login)
+    RadioButton radioBtnSalesManLogin;
+
     @Bind(R.id.edt_login_email)
     EditText edtLoginEmail;
     @Bind(R.id.edt_login_password)
@@ -103,6 +112,7 @@ public class LoginRegisterClientActivity extends AppCompatActivity
         sessionManager = new SessionManager(this);
 
         loginLayout.setVisibility(View.VISIBLE);
+        radioGroupLogin.setVisibility(View.VISIBLE);
         createAccLayout.setVisibility(View.GONE);
         carTypeLayout.setVisibility(View.GONE);
 
@@ -115,6 +125,7 @@ public class LoginRegisterClientActivity extends AppCompatActivity
                 }
             }
         });
+
 
         createGoogleApiClient();
         googleApiClient.connect();
@@ -182,7 +193,7 @@ public class LoginRegisterClientActivity extends AppCompatActivity
                         u.userPassword = password;
                         u.fullName = fullName;
                         u.contact = contact;
-                        u.carType=0;
+                        u.carType = 0;
                         u.latitude = salesLati;
                         u.longitude = salesLongi;
                         u.save();
@@ -218,7 +229,7 @@ public class LoginRegisterClientActivity extends AppCompatActivity
                         u.userName = email;
                         u.userPassword = password;
                         u.fullName = fullName;
-                        u.carType=0;
+                        u.carType = 0;
                         u.contact = contact;
                         u.latitude = salesLati;
                         u.longitude = salesLongi;
@@ -279,17 +290,39 @@ public class LoginRegisterClientActivity extends AppCompatActivity
                 || TextUtils.isEmpty(password)) {
             showMessage(MetaData.MSG_EMPTY_FIELD);
         } else {
-            String sEmail = sessionManager.getEmail();
-            String sPassword = sessionManager.getPassword();
 
-            if (!email.equals(sEmail)) {
-                edtLoginEmail.setError(MetaData.MSG_EMAIL_NOT_FOUND);
-            } else if (!password.equals(sPassword)) {
-                edtLoginPassword.setError(MetaData.MSG_PASSWORD_NOT_MATCHED);
+            //// TODO: 8/15/17
+            if (radioBtnStationLogin.isChecked()) {
+                for (UserDb ud : UserDb.getUsers()) {
+
+                    Log.i("Users:", ud.userType + " : " + ud.userName + " : " + ud.userPassword);
+
+                    if (ud.userType.equals(MetaData.USER_TYPE_CLIENT_STATION)) {
+                        if (ud.userName.equals(email) && ud.userPassword.equals(password)) {
+                            sessionManager.setLogin(ud.userType, ud.fullName, ud.userName, ud.userPassword, ud.contact, ud.carType, ud.latitude, ud.longitude);
+                            launchDashboard();
+                            return;
+                        }
+                    }
+                }
+            } else if (radioBtnSalesManLogin.isChecked()) {
+                for (UserDb ud : UserDb.getUsers()) {
+
+                    Log.i("Users:", ud.userType + " : " + ud.userName + " : " + ud.userPassword);
+
+                    if (ud.userType.equals(MetaData.USER_TYPE_CLIENT_SALESMAN)) {
+                        if (ud.userName.equals(email) && ud.userPassword.equals(password)) {
+                            sessionManager.setLogin(ud.userType, ud.fullName, ud.userName, ud.userPassword, ud.contact, ud.carType, ud.latitude, ud.longitude);
+                            launchDashboard();
+                            return;
+                        }
+                    }
+                }
+                Toast.makeText(getApplicationContext(), "Sorry user does not exists", Toast.LENGTH_SHORT).show();
             } else {
-
-                launchDashboard();
+                Toast.makeText(getApplicationContext(), "You need to select the user Type", Toast.LENGTH_SHORT).show();
             }
+
         }
     }
 
@@ -297,11 +330,13 @@ public class LoginRegisterClientActivity extends AppCompatActivity
     public void onBtnNewToCarwashClicked() {
         createAccLayout.setVisibility(View.VISIBLE);
         loginLayout.setVisibility(View.GONE);
+        radioGroupLogin.setVisibility(View.GONE);
     }
 
     @OnClick(R.id.btn_already_member)
     public void onBtnAlreadyMemberClicked() {
         createAccLayout.setVisibility(View.GONE);
+        radioGroupLogin.setVisibility(View.VISIBLE);
         loginLayout.setVisibility(View.VISIBLE);
     }
 
