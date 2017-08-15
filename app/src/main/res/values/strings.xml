@@ -56,4 +56,7 @@
     <string name="ignore_order">Ignore order</string>
     <string name="view_detail">View Detail</string>
     <string name="complete_order">Change to Compelete</string>
+    <string name="choose_user_type">Choose user type</string>
+    <string name="customer">Customer</string>
+    <string name="client">Client</string>
 </resources>

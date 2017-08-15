@@ -1,4 +1,4 @@
-package com.ronem.carwash.view;
+package com.ronem.carwash.view.login;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -46,7 +46,7 @@ import butterknife.OnClick;
  * Created by ram on 7/31/17.
  */
 
-public class LoginRegisterActivity
+public class LoginRegisterCustomerActivity
         extends AppCompatActivity
         implements AdapterView.OnItemSelectedListener,
         GoogleApiClient.ConnectionCallbacks,
@@ -69,19 +69,9 @@ public class LoginRegisterActivity
     EditText edtContact;
     @Bind(R.id.create_account_spinner_car_type)
     Spinner spinnerCarType;
-    @Bind(R.id.edt_latitude)
-    EditText edtlatitude;
-    @Bind(R.id.edt_longitude)
-    EditText edtLongitude;
 
     @Bind(R.id.radio_group)
     RadioGroup radioGroup;
-    @Bind(R.id.radio_customer)
-    RadioButton radioStation;
-    @Bind(R.id.radio_client)
-    RadioButton radioSalesMan;
-    @Bind(R.id.lat_long_layout)
-    LinearLayout latLngLayout;
 
     @Bind(R.id.edt_login_email)
     EditText edtLoginEmail;
@@ -92,10 +82,11 @@ public class LoginRegisterActivity
     private final int PERMISSION_REQUEST_CODE = 100;
     private List<CarType> carTypes;
     private CarType carType;
-    private String salesLati, salesLongi;
+    private String myLatitude, myLongitude;
 
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
+    private String userType;
 
 
     @Override
@@ -108,25 +99,14 @@ public class LoginRegisterActivity
         setContentView(R.layout.login_register_layout);
         ButterKnife.bind(this);
 
+        radioGroup.setVisibility(View.GONE);
+
         sessionManager = new SessionManager(this);
-        if (sessionManager.isLoggedIn()) {
-            launchDashboard();
-        } else {
-            loginLayout.setVisibility(View.VISIBLE);
-            createAccLayout.setVisibility(View.GONE);
-        }
+        loginLayout.setVisibility(View.VISIBLE);
+        createAccLayout.setVisibility(View.GONE);
 
         configureSCarTypeSpinner();
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, @IdRes int i) {
-                if (!BasicUtilityMethods.isGPSEnabled(LoginRegisterActivity.this)) {
-                    BasicUtilityMethods.openGPSSettingDialog(LoginRegisterActivity.this);
-                }
-            }
-        });
 
         createGoogleApiClient();
         googleApiClient.connect();
@@ -165,8 +145,6 @@ public class LoginRegisterActivity
         String password = edtPassword.getText().toString();
         String confirmPassword = edtConfirmPassword.getText().toString();
         String contact = edtContact.getText().toString();
-        String latitude = edtlatitude.getText().toString();
-        String longitude = edtLongitude.getText().toString();
 
 
         if (TextUtils.isEmpty(fullName)
@@ -180,34 +158,16 @@ public class LoginRegisterActivity
         } else if (!password.equals(confirmPassword)) {
             showMessage(MetaData.MSG_PASSWORD_NOT_MATCHED);
         } else {
-            if (radioStation.isChecked()) {
-                if (BasicUtilityMethods.isGPSEnabled(this)) {
-                    if (TextUtils.isEmpty(salesLati) && TextUtils.isEmpty(salesLongi)) {
-                        showMessage("Please wait accessing your location");
-                    } else {
-                        sessionManager.setLogin(MetaData.USER_TYPE_CUSTOMER, fullName, email, password, contact, carType.getId(), salesLati, salesLongi);
-                        launchDashboard();
-                    }
+            if (BasicUtilityMethods.isGPSEnabled(this)) {
+                if (TextUtils.isEmpty(myLatitude) && TextUtils.isEmpty(myLongitude)) {
+                    showMessage("Please wait accessing your location");
                 } else {
-                    BasicUtilityMethods.openGPSSettingDialog(this);
+                    sessionManager.setLogin(MetaData.USER_TYPE_CUSTOMER, fullName, email, password, contact, carType.getId(), myLatitude, myLongitude);
+                    launchDashboard();
                 }
-            } else if (radioSalesMan.isChecked()) {
-
-                if (BasicUtilityMethods.isGPSEnabled(this)) {
-                    if (TextUtils.isEmpty(salesLati) && TextUtils.isEmpty(salesLongi)) {
-                        showMessage("Please wait accessing your location");
-                    } else {
-                        sessionManager.setLogin(MetaData.USER_TYPE_SALESMAN, fullName, email, password, contact, carType.getId(), salesLati, salesLongi);
-                        launchDashboard();
-                    }
-                } else {
-                    BasicUtilityMethods.openGPSSettingDialog(this);
-                }
-
-            }else{
-                showMessage("Please select either user or salesman");
+            } else {
+                BasicUtilityMethods.openGPSSettingDialog(this);
             }
-
         }
     }
 
@@ -268,13 +228,7 @@ public class LoginRegisterActivity
     }
 
     private void launchDashboard() {
-        Intent i;
-        if (sessionManager.getUserType().equals(MetaData.USER_TYPE_CUSTOMER)) {
-            i = new Intent(this, CustomerDashboard.class);
-        } else {
-            i = new Intent(this, ClientDashboard.class);
-        }
-
+        Intent i = new Intent(this, CustomerDashboard.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(i);
     }
@@ -298,8 +252,8 @@ public class LoginRegisterActivity
     public void onLocationChanged(Location location) {
         if (location == null)
             return;
-        salesLati = String.valueOf(location.getLatitude());
-        salesLongi = String.valueOf(location.getLongitude());
+        myLatitude = String.valueOf(location.getLatitude());
+        myLongitude = String.valueOf(location.getLongitude());
     }
 
     @Override

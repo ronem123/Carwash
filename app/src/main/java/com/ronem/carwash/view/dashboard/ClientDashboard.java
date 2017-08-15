@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -28,13 +27,10 @@ import com.ronem.carwash.utils.ItemDividerDecoration;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.RecyclerItemClickListener;
 import com.ronem.carwash.utils.SessionManager;
-import com.ronem.carwash.view.LoginRegisterActivity;
-import com.ronem.carwash.view.delivered.DeliveredActivity;
+import com.ronem.carwash.view.login.LoginRegisterCustomerActivity;
 import com.ronem.carwash.view.editprofile.EditProfileActivity;
 import com.ronem.carwash.view.live_processing_orders.FragmentFinishedOrderClient;
-import com.ronem.carwash.view.live_processing_orders.FragmentLiveOrderClient;
 import com.ronem.carwash.view.live_processing_orders.FragmentLiveProcessingOrder;
-import com.ronem.carwash.view.order.OrderActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -157,7 +153,7 @@ public class ClientDashboard extends AppCompatActivity implements RecyclerItemCl
                 break;
             case MetaData.ITEM_LOG_OUT:
                 sessionManager.logOut();
-                Intent i = new Intent(ClientDashboard.this, LoginRegisterActivity.class);
+                Intent i = new Intent(ClientDashboard.this, LoginRegisterCustomerActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
                 break;

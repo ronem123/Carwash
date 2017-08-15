@@ -31,8 +31,11 @@ public class MetaData {
     public static final String KEY_ORDER_TYPE = "order_type";
     public static final String ORDER_TYPE_DELIVERD = "Delivered";
     public static final String ORDER_TYPE_STATION = "Station";
+    public static final String KEY_USER_TYPE = "user_type";
     public static final String USER_TYPE_CUSTOMER = "userType_customer";
-    public static final String USER_TYPE_SALESMAN = "userType_sales_man";
+    public static final String USER_TYPE_CLIENT = "userType_client";
+    public static final String USER_TYPE_CLIENT_STATION = "userType_client_station";
+    public static final String USER_TYPE_CLIENT_SALESMAN = "userType_client_sales_man";
 
     public static final String ITEM_ORDERS = "Orders";
     public static final String ITEM_LIVE_ORDER = "Live Orders";

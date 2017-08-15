@@ -38,7 +38,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.LoginRegisterActivity"
+            android:name=".view.login.LoginRegisterCustomerActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.dashboard.CustomerDashboard"
