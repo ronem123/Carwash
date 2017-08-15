@@ -25,10 +25,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.ronem.carwash.R;
+import com.ronem.carwash.model.UserDb;
 import com.ronem.carwash.utils.BasicUtilityMethods;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.SessionManager;
 import com.ronem.carwash.view.dashboard.ClientDashboard;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -160,6 +163,31 @@ public class LoginRegisterClientActivity extends AppCompatActivity
                     if (TextUtils.isEmpty(salesLati) && TextUtils.isEmpty(salesLongi)) {
                         showMessage("Please wait accessing your location");
                     } else {
+
+                        List<UserDb> users = UserDb.getUsers();
+                        if (users != null && users.size() > 0) {
+                            for (UserDb ud : users) {
+                                if (ud.userName.equals(email) && ud.userType.equals(MetaData.USER_TYPE_CLIENT_STATION)) {
+                                    Toast.makeText(getApplicationContext(), "Sorry ! user already exists with this email", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+                        }
+
+                        //large db for users
+                        UserDb u = new UserDb();
+                        u.userId = getUserID();
+                        u.userType = MetaData.USER_TYPE_CLIENT_STATION;
+                        u.userName = email;
+                        u.userPassword = password;
+                        u.fullName = fullName;
+                        u.contact = contact;
+                        u.carType=0;
+                        u.latitude = salesLati;
+                        u.longitude = salesLongi;
+                        u.save();
+
+                        //small cache for the application
                         sessionManager.setLogin(MetaData.USER_TYPE_CLIENT_STATION, fullName, email, password, contact, -1, salesLati, salesLongi);
                         launchDashboard();
                     }
@@ -172,6 +200,31 @@ public class LoginRegisterClientActivity extends AppCompatActivity
                     if (TextUtils.isEmpty(salesLati) && TextUtils.isEmpty(salesLongi)) {
                         showMessage("Please wait accessing your location");
                     } else {
+
+                        List<UserDb> users = UserDb.getUsers();
+                        if (users != null && users.size() > 0) {
+                            for (UserDb ud : users) {
+                                if (ud.userName.equals(email) && ud.userType.equals(MetaData.USER_TYPE_CLIENT_SALESMAN)) {
+                                    Toast.makeText(getApplicationContext(), "Sorry ! user already exists with this email", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                            }
+                        }
+
+                        //large db for users
+                        UserDb u = new UserDb();
+                        u.userId = getUserID();
+                        u.userType = MetaData.USER_TYPE_CLIENT_SALESMAN;
+                        u.userName = email;
+                        u.userPassword = password;
+                        u.fullName = fullName;
+                        u.carType=0;
+                        u.contact = contact;
+                        u.latitude = salesLati;
+                        u.longitude = salesLongi;
+                        u.save();
+
+                        //small cache for the application
                         sessionManager.setLogin(MetaData.USER_TYPE_CLIENT_SALESMAN, fullName, email, password, contact, -1, salesLati, salesLongi);
                         launchDashboard();
                     }
@@ -184,6 +237,15 @@ public class LoginRegisterClientActivity extends AppCompatActivity
             }
 
         }
+    }
+
+    private int getUserID() {
+
+        int counter = sessionManager.getLatestUserCounter();
+        counter++;
+        sessionManager.setUserCounter(counter);
+
+        return counter;
     }
 
     private void checkRunTimePermissionLaunchDashboard() {
@@ -225,6 +287,7 @@ public class LoginRegisterClientActivity extends AppCompatActivity
             } else if (!password.equals(sPassword)) {
                 edtLoginPassword.setError(MetaData.MSG_PASSWORD_NOT_MATCHED);
             } else {
+
                 launchDashboard();
             }
         }

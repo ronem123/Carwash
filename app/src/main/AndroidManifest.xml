@@ -28,7 +28,8 @@
             android:value="1" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="com.ronem.carwash.model.Order" />
+            android:value="com.ronem.carwash.model.Order,
+com.ronem.carwash.model.UserDb" />
 
         <activity android:name=".view.CarwashSplash">
             <intent-filter>

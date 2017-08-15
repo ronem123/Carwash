@@ -23,6 +23,7 @@ public class SessionManager {
     private final String KEY_LONGI = "longi";
 
     private final String KEY_COUNTER = "counter";
+    private final String KEY_USER_COUNTER = "user_counter";
 
     private final String KEY_PAYMENT_DONE = "payment_done";
 
@@ -116,5 +117,15 @@ public class SessionManager {
 
     public int getLatestCounter() {
         return sharedPreferences.getInt(KEY_COUNTER, 0);
+    }
+
+    //update the counter of users
+    public void setUserCounter(int counter) {
+        editor = sharedPreferences.edit();
+        editor.putInt(KEY_USER_COUNTER, counter).apply();
+    }
+
+    public int getLatestUserCounter() {
+        return sharedPreferences.getInt(KEY_USER_COUNTER, 0);
     }
 }

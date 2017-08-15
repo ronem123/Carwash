@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -29,6 +30,7 @@ import com.google.android.gms.location.LocationServices;
 import com.ronem.carwash.R;
 import com.ronem.carwash.adapters.CarTypeAdapterRegister;
 import com.ronem.carwash.model.CarType;
+import com.ronem.carwash.model.UserDb;
 import com.ronem.carwash.utils.BasicUtilityMethods;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.SessionManager;
@@ -162,13 +164,42 @@ public class LoginRegisterCustomerActivity
                 if (TextUtils.isEmpty(myLatitude) && TextUtils.isEmpty(myLongitude)) {
                     showMessage("Please wait accessing your location");
                 } else {
+                    List<UserDb> users = UserDb.getUsers();
+                    if (users != null && users.size() > 0) {
+                        for (UserDb ud : users) {
+                            if (ud.userName.equals(email) && ud.userType.equals(MetaData.USER_TYPE_CUSTOMER)) {
+                                Toast.makeText(getApplicationContext(), "Sorry ! user already exists with this email", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        }
+                    }
                     sessionManager.setLogin(MetaData.USER_TYPE_CUSTOMER, fullName, email, password, contact, carType.getId(), myLatitude, myLongitude);
+                    UserDb u = new UserDb();
+                    u.userId = getUserID();
+                    u.userType = MetaData.USER_TYPE_CUSTOMER;
+                    u.userName = email;
+                    u.userPassword = password;
+                    u.fullName = fullName;
+                    u.contact = contact;
+                    u.latitude = myLatitude;
+                    u.longitude = myLongitude;
+                    u.save();
+
                     launchDashboard();
                 }
             } else {
                 BasicUtilityMethods.openGPSSettingDialog(this);
             }
         }
+    }
+
+    private int getUserID() {
+
+        int counter = sessionManager.getLatestUserCounter();
+        counter++;
+        sessionManager.setUserCounter(counter);
+
+        return counter;
     }
 
     private void checkRunTimePermissionLaunchDashboard() {
@@ -202,16 +233,20 @@ public class LoginRegisterCustomerActivity
                 || TextUtils.isEmpty(password)) {
             showMessage(MetaData.MSG_EMPTY_FIELD);
         } else {
-            String sEmail = sessionManager.getEmail();
-            String sPassword = sessionManager.getPassword();
 
-            if (!email.equals(sEmail)) {
-                edtLoginEmail.setError(MetaData.MSG_EMAIL_NOT_FOUND);
-            } else if (!password.equals(sPassword)) {
-                edtLoginPassword.setError(MetaData.MSG_PASSWORD_NOT_MATCHED);
-            } else {
-                launchDashboard();
+            for (UserDb ud : UserDb.getUsers()) {
+                Log.i("Users:", ud.userType+" : "+ud.userName + " : " + ud.userPassword);
+
+                if (ud.userType.equals(MetaData.USER_TYPE_CUSTOMER)) {
+                    if (ud.userName.equals(email) && ud.userPassword.equals(password)) {
+                        sessionManager.setLogin(ud.userType,ud.fullName,ud.userName,ud.userPassword,ud.contact,ud.carType,ud.latitude,ud.longitude);
+                        launchDashboard();
+                        return;
+                    }
+                }
             }
+            Toast.makeText(getApplicationContext(), "Sorry user not exists", Toast.LENGTH_SHORT).show();
+
         }
     }
 

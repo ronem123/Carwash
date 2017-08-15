@@ -27,6 +27,7 @@ import com.ronem.carwash.utils.ItemDividerDecoration;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.RecyclerItemClickListener;
 import com.ronem.carwash.utils.SessionManager;
+import com.ronem.carwash.view.login.LoginRegisterClientActivity;
 import com.ronem.carwash.view.login.LoginRegisterCustomerActivity;
 import com.ronem.carwash.view.editprofile.EditProfileActivity;
 import com.ronem.carwash.view.live_processing_orders.FragmentFinishedOrderClient;
@@ -153,7 +154,7 @@ public class ClientDashboard extends AppCompatActivity implements RecyclerItemCl
                 break;
             case MetaData.ITEM_LOG_OUT:
                 sessionManager.logOut();
-                Intent i = new Intent(ClientDashboard.this, LoginRegisterCustomerActivity.class);
+                Intent i = new Intent(ClientDashboard.this, LoginRegisterClientActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
                 break;

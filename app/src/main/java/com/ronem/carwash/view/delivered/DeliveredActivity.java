@@ -33,6 +33,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ronem.carwash.R;
 import com.ronem.carwash.model.DeliveredStationLocation;
+import com.ronem.carwash.model.UserDb;
 import com.ronem.carwash.utils.BasicUtilityMethods;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.SessionManager;
@@ -41,6 +42,7 @@ import com.ronem.carwash.view.dashboard.DirectionAdView;
 import com.ronem.carwash.view.dashboard.DirectionPresenter;
 import com.ronem.carwash.view.dashboard.DirectionPresenterImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -87,8 +89,15 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
         presenter.onAddDirectionView(this);
         BasicUtilityMethods.checkifGPSisEnabled(this);
 
-        deliveredLocations = MetaData.getDeliveredLocations();
-//        markers = new ArrayList<>();
+//        deliveredLocations = MetaData.getDeliveredLocations();
+        deliveredLocations = new ArrayList<>();
+        for (UserDb ud : UserDb.getUsers()) {
+            if (!ud.userType.equals(MetaData.USER_TYPE_CUSTOMER)) {
+                DeliveredStationLocation d = new DeliveredStationLocation(ud.userId, ud.fullName, "Address will be displayed here", ud.contact, 3, Double.parseDouble(ud.latitude), Double.parseDouble(ud.longitude));
+                deliveredLocations.add(d);
+                Log.i("LatLang",ud.latitude+"\n"+ud.longitude);
+            }
+        }
 
         createGoogleApiClient();
         googleApiClient.connect();
