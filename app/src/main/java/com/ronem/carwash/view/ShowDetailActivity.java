@@ -1,6 +1,7 @@
 package com.ronem.carwash.view;
 
 import android.os.Bundle;
+import android.support.annotation.InterpolatorRes;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -146,14 +147,15 @@ public class ShowDetailActivity extends AppCompatActivity
     @OnClick(R.id.btn_make_payment)
     public void onBtnMakePaymentClicked() {
         price = carType.getPrice();
-        String totalPrice = "Car Price:" + price + "tService charge" + serviceTye.getServiceCharge();
+
+        String totalPrice = getPrice(price, serviceTye.getServiceCharge());
         String add = address.getAddress();
         if (!TextUtils.isEmpty(paymentMethod)) {
             sessionManager.setPaymentDone();
 
             Order order = new Order(getOrderId(), orderType, deliveredStationLocation.getCarWasher(), "",
                     deliveredStationLocation.getContact(), add, carType.getType(),
-                    paymentMethod, totalPrice + "", serviceTye.getServiceType(),
+                    paymentMethod, totalPrice, serviceTye.getServiceType(),
                     sessionManager.getLatitude(), sessionManager.getLongitude(),
                     MetaData.ORDER_STATUS_LIVE, sessionManager.getFullName());
             order.save();
@@ -162,6 +164,22 @@ public class ShowDetailActivity extends AppCompatActivity
         } else {
             Toast.makeText(getApplicationContext(), "Please select at least one payment method", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private String getPrice(String price, String serviceCharge) {
+
+        String p = price;
+        String sp = serviceCharge;
+
+        p = p.replace("SR", "");
+        sp = sp.replace("SR", "");
+
+        int iP = Integer.parseInt(p);
+        int isP = Integer.parseInt(sp);
+
+        int t = iP + isP;
+
+        return String.valueOf(t);
     }
 
     private int getOrderId() {

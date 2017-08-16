@@ -111,6 +111,7 @@ public class CustomerDashboard extends AppCompatActivity
     private Polyline polyline;
     private SessionManager sessionManager;
     private String userType;
+    private boolean isCameraAnimated = false;
 
 
     @Override
@@ -290,10 +291,13 @@ public class CustomerDashboard extends AppCompatActivity
             mPositionMarker.setTag(-1);
         }
 
-        animateMarker(mPositionMarker, myLocation); // Helper method for smooth
-        // animation
+        if(!isCameraAnimated) {
+            animateMarker(mPositionMarker, myLocation); // Helper method for smooth
+            // animation
 
-        googleMap.animateCamera(CameraUpdateFactory.newLatLng(myLatlang));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLng(myLatlang));
+            isCameraAnimated = true;
+        }
     }
 
     @Override

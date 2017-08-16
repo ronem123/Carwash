@@ -75,6 +75,7 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
     private PolylineOptions polylineOptions;
     private Polyline polyline;
     private SessionManager sessionManager;
+    private boolean isCameraAnimated = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -170,11 +171,13 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
             mPositionMarker.setTag(-1);
         }
 
-        animateMarker(mPositionMarker, myLocation); // Helper method for smooth
-        // animation
+        if(!isCameraAnimated) {
+            animateMarker(mPositionMarker, myLocation); // Helper method for smooth
+            // animation
 
-        googleMap.animateCamera(CameraUpdateFactory.newLatLng(myLatlang));
-
+            googleMap.animateCamera(CameraUpdateFactory.newLatLng(myLatlang));
+            isCameraAnimated = true;
+        }
 
     }
 

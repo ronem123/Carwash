@@ -65,6 +65,7 @@ public class OrderMapActivity extends AppCompatActivity implements OnMapReadyCal
     private PolylineOptions polylineOptions;
     private Polyline polyline;
     private SessionManager sessionManager;
+    private boolean isCameraAnimated = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -158,11 +159,13 @@ public class OrderMapActivity extends AppCompatActivity implements OnMapReadyCal
 
         mPositionMarker = googleMap.addMarker(markerOption);
 
-        animateMarker(mPositionMarker, myLocation); // Helper method for smooth
-        // animation
+        if(!isCameraAnimated) {
+            animateMarker(mPositionMarker, myLocation); // Helper method for smooth
+            // animation
 
-        googleMap.animateCamera(CameraUpdateFactory.newLatLng(myLatlang));
-
+            googleMap.animateCamera(CameraUpdateFactory.newLatLng(myLatlang));
+            isCameraAnimated = true;
+        }
         //download the path polygone
         String url = BasicUtilityMethods.getUrl(myLatlang, destinationLatlang);
         if (BasicUtilityMethods.isNetworkOnline(OrderMapActivity.this)) {
