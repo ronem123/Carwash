@@ -1,5 +1,7 @@
 package com.ronem.carwash.view.login;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -8,7 +10,10 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -207,13 +212,37 @@ public class LoginRegisterCustomerActivity
         if (Build.VERSION.SDK_INT >= 23
                 && ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                showMessageOKCancel("You need to allow access to location",
+                        new DialogInterface.OnClickListener() {
+                            @RequiresApi(api = Build.VERSION_CODES.M)
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                requestPermissions(new String[]{
+                                        android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION
+                                }, PERMISSION_REQUEST_CODE);
+                            }
+                        });
+            }
+
             requestPermissions(new String[]{
                     android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION
             }, PERMISSION_REQUEST_CODE);
+
         } else {
             BasicUtilityMethods.checkifGPSisEnabled(this);
             googleApiClient.connect();
         }
+    }
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", null)
+                .create()
+                .show();
     }
 
     @Override
@@ -224,7 +253,7 @@ public class LoginRegisterCustomerActivity
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.i("Permission", "received");
                 if (!googleApiClient.isConnected()) {
-                    Log.i("GoogleClient","was not connected");
+                    Log.i("GoogleClient", "was not connected");
                     googleApiClient.connect();
                 }
                 if (!BasicUtilityMethods.isGPSEnabled(this)) {
@@ -307,18 +336,18 @@ public class LoginRegisterCustomerActivity
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Log.i("GoogleClient","Connected");
+        Log.i("GoogleClient", "Connected");
         requestLocationupdate();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.i("GoogleClient","Suspended");
+        Log.i("GoogleClient", "Suspended");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.i("GoogleClient","Connection Failed");
+        Log.i("GoogleClient", "Connection Failed");
     }
 
     @SuppressWarnings("MissingPermission")
