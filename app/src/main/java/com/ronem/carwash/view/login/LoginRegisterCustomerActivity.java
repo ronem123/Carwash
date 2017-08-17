@@ -111,8 +111,9 @@ public class LoginRegisterCustomerActivity
 
 
         createGoogleApiClient();
-        googleApiClient.connect();
+//        googleApiClient.connect();
 
+        checkRunTimePermissionLaunchDashboard();
         locationRequest = BasicUtilityMethods.createLocationRequest();
     }
 
@@ -209,19 +210,32 @@ public class LoginRegisterCustomerActivity
             requestPermissions(new String[]{
                     android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION
             }, PERMISSION_REQUEST_CODE);
+        } else {
+            BasicUtilityMethods.checkifGPSisEnabled(this);
+            googleApiClient.connect();
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (!BasicUtilityMethods.isGPSEnabled(this)) {
-                BasicUtilityMethods.openGPSSettingDialog(this);
+
+            //if user has granted the permissions
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.i("Permission", "received");
+                if (!googleApiClient.isConnected()) {
+                    Log.i("GoogleClient","was not connected");
+                    googleApiClient.connect();
+                }
+                if (!BasicUtilityMethods.isGPSEnabled(this)) {
+                    BasicUtilityMethods.openGPSSettingDialog(this);
+                }
+            } else {
+                checkRunTimePermissionLaunchDashboard();
             }
         } else {
-            checkRunTimePermissionLaunchDashboard();
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @OnClick(R.id.btn_login)
@@ -235,11 +249,11 @@ public class LoginRegisterCustomerActivity
         } else {
 
             for (UserDb ud : UserDb.getUsers()) {
-                Log.i("Users:", ud.userType+" : "+ud.userName + " : " + ud.userPassword);
+                Log.i("Users:", ud.userType + " : " + ud.userName + " : " + ud.userPassword);
 
                 if (ud.userType.equals(MetaData.USER_TYPE_CUSTOMER)) {
                     if (ud.userName.equals(email) && ud.userPassword.equals(password)) {
-                        sessionManager.setLogin(ud.userType,ud.fullName,ud.userName,ud.userPassword,ud.contact,ud.carType,ud.latitude,ud.longitude);
+                        sessionManager.setLogin(ud.userType, ud.fullName, ud.userName, ud.userPassword, ud.contact, ud.carType, ud.latitude, ud.longitude);
                         launchDashboard();
                         return;
                     }
@@ -293,17 +307,18 @@ public class LoginRegisterCustomerActivity
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.i("GoogleClient","Connected");
         requestLocationupdate();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.i("GoogleClient","Suspended");
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Log.i("GoogleClient","Connection Failed");
     }
 
     @SuppressWarnings("MissingPermission")
@@ -314,6 +329,6 @@ public class LoginRegisterCustomerActivity
     @Override
     protected void onResume() {
         super.onResume();
-        checkRunTimePermissionLaunchDashboard();
+//        checkRunTimePermissionLaunchDashboard();
     }
 }
