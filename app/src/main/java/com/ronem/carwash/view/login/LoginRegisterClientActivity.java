@@ -305,6 +305,7 @@ public class LoginRegisterClientActivity extends AppCompatActivity
                         }
                     }
                 }
+                Toast.makeText(getApplicationContext(), "Sorry user does not exists", Toast.LENGTH_SHORT).show();
             } else if (radioBtnSalesManLogin.isChecked()) {
                 for (UserDb ud : UserDb.getUsers()) {
 
