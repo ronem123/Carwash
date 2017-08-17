@@ -13,11 +13,17 @@ public class SessionManager {
     private SharedPreferences sharedPreferences;
     private SharedPreferences.Editor editor;
     private final String IS_LOGIN = "islogin";
+    private final String KEY_USER_TYPE = "user_type";
     private final String KEY_FULL_NAME = "full_name";
     private final String KEY_EMAIL = "email";
     private final String KEY_PASSWORD = "password";
     private final String KEY_CONTACT = "contact";
     private final String KEY_CAR_TYPE = "car_type";
+    private final String KEY_LATI = "latitude";
+    private final String KEY_LONGI = "longi";
+
+    private final String KEY_COUNTER = "counter";
+    private final String KEY_USER_COUNTER = "user_counter";
 
     private final String KEY_PAYMENT_DONE = "payment_done";
 
@@ -25,15 +31,18 @@ public class SessionManager {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public void setLogin(String fullname, String email, String password, String contact, int carType) {
+    public void setLogin(String userType, String fullname, String email, String password, String contact, int carType, String lat, String longi) {
         editor = sharedPreferences.edit();
         editor.putString(KEY_FULL_NAME, fullname);
         editor.putString(KEY_EMAIL, email);
         if (!TextUtils.isEmpty(password)) {
             editor.putString(KEY_PASSWORD, password);
         }
+        editor.putString(KEY_USER_TYPE, userType);
         editor.putString(KEY_CONTACT, contact);
         editor.putInt(KEY_CAR_TYPE, carType);
+        editor.putString(KEY_LATI, lat);
+        editor.putString(KEY_LONGI, longi);
         editor.putBoolean(IS_LOGIN, true);
         editor.apply();
     }
@@ -56,6 +65,19 @@ public class SessionManager {
 
     public int getCarType() {
         return sharedPreferences.getInt(KEY_CAR_TYPE, 0);
+    }
+
+    public String getUserType() {
+        return sharedPreferences.getString(KEY_USER_TYPE, "");
+    }
+
+    public String getLatitude() {
+        return sharedPreferences.getString(KEY_LATI, "0.0");
+
+    }
+
+    public String getLongitude() {
+        return sharedPreferences.getString(KEY_LONGI, "0.0");
     }
 
     public boolean isLoggedIn() {
@@ -84,5 +106,26 @@ public class SessionManager {
     public void clearPaymentDone() {
         editor = sharedPreferences.edit();
         editor.putBoolean(KEY_PAYMENT_DONE, false).apply();
+    }
+
+
+    //update the counter of order
+    public void setOrderCounter(int counter) {
+        editor = sharedPreferences.edit();
+        editor.putInt(KEY_COUNTER, counter).apply();
+    }
+
+    public int getLatestCounter() {
+        return sharedPreferences.getInt(KEY_COUNTER, 0);
+    }
+
+    //update the counter of users
+    public void setUserCounter(int counter) {
+        editor = sharedPreferences.edit();
+        editor.putInt(KEY_USER_COUNTER, counter).apply();
+    }
+
+    public int getLatestUserCounter() {
+        return sharedPreferences.getInt(KEY_USER_COUNTER, 0);
     }
 }

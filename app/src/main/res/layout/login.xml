@@ -44,6 +44,38 @@
                 android:hint="@string/password"
                 android:inputType="textPassword" />
 
+            <RadioGroup
+                android:id="@+id/radio_group_login"
+                android:visibility="invisible"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@color/color_white"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/_10sdp">
+
+                <RadioButton
+                    android:id="@+id/radio_btn_station_login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="@dimen/_5sdp"
+                    android:text="User"
+                    android:textColor="@color/color_grey"
+                    android:textSize="@dimen/_12sdp" />
+
+                <RadioButton
+                    android:id="@+id/radio_btn_sales_man_login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_25sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:text="Salesman"
+                    android:textColor="@color/color_grey"
+                    android:textSize="@dimen/_12sdp" />
+            </RadioGroup>
+
             <Button
                 android:id="@+id/btn_login"
                 style="@style/event_button.Login" />

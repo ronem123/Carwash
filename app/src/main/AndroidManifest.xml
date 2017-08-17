@@ -28,8 +28,8 @@
             android:value="1" />
         <meta-data
             android:name="AA_MODELS"
-            android:value="com.ronem.carwash.model.Order" />
-
+            android:value="com.ronem.carwash.model.Order,
+com.ronem.carwash.model.UserDb" />
 
         <activity android:name=".view.CarwashSplash">
             <intent-filter>
@@ -39,10 +39,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.LoginRegisterActivity"
+            android:name=".view.UserTypeSelectionActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.dashboard.Dashboard"
+            android:name=".view.login.LoginRegisterCustomerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.login.LoginRegisterClientActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.dashboard.CustomerDashboard"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.dashboard.ClientDashboard"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.ShowDetailActivity"
@@ -56,6 +65,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.delivered.DeliveredActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".view.OrderMapActivity"
             android:screenOrientation="portrait" />
     </application>
 

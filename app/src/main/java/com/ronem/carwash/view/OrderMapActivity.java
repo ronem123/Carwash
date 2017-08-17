@@ -1,4 +1,4 @@
-package com.ronem.carwash.view.delivered;
+package com.ronem.carwash.view;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
@@ -32,27 +31,21 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ronem.carwash.R;
-import com.ronem.carwash.model.DeliveredStationLocation;
-import com.ronem.carwash.model.UserDb;
 import com.ronem.carwash.utils.BasicUtilityMethods;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.SessionManager;
-import com.ronem.carwash.view.MyDialog;
 import com.ronem.carwash.view.dashboard.DirectionAdView;
 import com.ronem.carwash.view.dashboard.DirectionPresenter;
 import com.ronem.carwash.view.dashboard.DirectionPresenterImpl;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by ronem on 8/7/17.
+ * Created by ram on 8/12/17.
  */
 
-public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCallback,
+public class OrderMapActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener,
@@ -65,13 +58,10 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
     private GoogleApiClient googleApiClient;
     private LocationRequest locationRequest;
     private GoogleMap googleMap;
-    private List<DeliveredStationLocation> deliveredLocations;
     private DirectionPresenter presenter;
     private Marker mPositionMarker;
     private Location myLocation;
     private LatLng myLatlang, destinationLatlang;
-    private DeliveredStationLocation deliveredStationLocation;
-    //    private List<Marker> markers;
     private PolylineOptions polylineOptions;
     private Polyline polyline;
     private SessionManager sessionManager;
@@ -90,15 +80,13 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
         presenter.onAddDirectionView(this);
         BasicUtilityMethods.checkifGPSisEnabled(this);
 
-//        deliveredLocations = MetaData.getDeliveredLocations();
-        deliveredLocations = new ArrayList<>();
-        for (UserDb ud : UserDb.getUsers()) {
-            if (!ud.userType.equals(MetaData.USER_TYPE_CUSTOMER)) {
-                DeliveredStationLocation d = new DeliveredStationLocation(ud.userId, ud.fullName, "Address will be displayed here", ud.contact, 3, Double.parseDouble(ud.latitude), Double.parseDouble(ud.longitude));
-                deliveredLocations.add(d);
-                Log.i("LatLang",ud.latitude+"\n"+ud.longitude);
-            }
-        }
+        String latitude = getIntent().getStringExtra(MetaData.KEY_LATITUDE);
+        String longitude = getIntent().getStringExtra(MetaData.KEY_LONGITUDE);
+
+        double lat = Double.parseDouble(latitude);
+        double longi = Double.parseDouble(longitude);
+
+        destinationLatlang = new LatLng(lat, longi);
 
         createGoogleApiClient();
         googleApiClient.connect();
@@ -158,18 +146,18 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
         if (l == null)
             return;
 
-        if (mPositionMarker == null) {
 
-            myLocation = l;
-            myLatlang = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+        myLocation = l;
+        myLatlang = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
 
-            MarkerOptions markerOption = new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                    .position(myLatlang);
-
-            mPositionMarker = googleMap.addMarker(markerOption);
-            mPositionMarker.setTag(-1);
+        if (mPositionMarker != null) {
+            mPositionMarker.remove();
         }
+        MarkerOptions markerOption = new MarkerOptions()
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                .position(myLatlang);
+
+        mPositionMarker = googleMap.addMarker(markerOption);
 
         if(!isCameraAnimated) {
             animateMarker(mPositionMarker, myLocation); // Helper method for smooth
@@ -177,6 +165,13 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
 
             googleMap.animateCamera(CameraUpdateFactory.newLatLng(myLatlang));
             isCameraAnimated = true;
+        }
+        //download the path polygone
+        String url = BasicUtilityMethods.getUrl(myLatlang, destinationLatlang);
+        if (BasicUtilityMethods.isNetworkOnline(OrderMapActivity.this)) {
+            presenter.onGetPolyLineOptions(url);
+        } else {
+            Toast.makeText(getApplicationContext(), "Please enable your internet connection", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -199,70 +194,24 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
 
         googleMap.setMyLocationEnabled(false);
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(MetaData.MAP_ZOOM));
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                Integer tag = (Integer) marker.getTag();
-                destinationLatlang = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
-
-                if (tag != -1) {
-
-                    if (myLocation == null) {
-                        Toast.makeText(getApplicationContext(), "sorry location not found", Toast.LENGTH_SHORT).show();
-                    } else {
-                        String url = BasicUtilityMethods.getUrl(myLatlang, destinationLatlang);
-                        Log.i("URL::", url);
-                        if (BasicUtilityMethods.isNetworkOnline(DeliveredActivity.this)) {
-                            for (DeliveredStationLocation d : deliveredLocations) {
-                                if (d.getlId() == tag) {
-                                    deliveredStationLocation = d;
-                                }
-                            }
-                            presenter.onGetPolyLineOptions(url);
-                        } else {
-                            Toast.makeText(getApplicationContext(), "Please enable your internet connection", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-                return true;
-            }
-        });
 
         //sprinkle markers
 
-        for (int i = 0; i < deliveredLocations.size(); i++) {
-            DeliveredStationLocation d = deliveredLocations.get(i);
-            LatLng l = new LatLng(d.getLatitude(), d.getLongitude());
-            MarkerOptions markerOption = new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                    .position(l);
-            Marker m = googleMap.addMarker(markerOption);
-            m.setTag(d.getlId());
-
-//            markers.add(m);
-        }
-
-        //Draw your circle
-//        Circle circle = mMap.addCircle(new CircleOptions()
-//                .center(latLng)
-//                .radius(400)
-//                .strokeColor(Color.rgb(0, 136, 255))
-//                .fillColor(Color.argb(20, 0, 136, 255)));
-//
-//        for (Marker marker : markers) {
-//            if (SphericalUtil.computeDistanceBetween(latLng, marker.getPosition()) < 400) {
-//                marker.setVisible(true);
-//            }
-//        }
+        MarkerOptions markerOption = new MarkerOptions()
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                .position(destinationLatlang);
+        googleMap.addMarker(markerOption);
 
 
     }
 
     @Override
     public void onPolyLineOptionReceived(PolylineOptions polylineOptions, String distance, String duration) {
-        MyDialog d = new MyDialog(DeliveredActivity.this, distance, duration, deliveredStationLocation, MetaData.ORDER_TYPE_DELIVERD);
-        d.show();
         this.polylineOptions = polylineOptions;
+        if (polyline != null) {
+            polyline.remove();
+        }
+        polyline = googleMap.addPolyline(polylineOptions);
     }
 
     @Override
@@ -278,15 +227,6 @@ public class DeliveredActivity extends AppCompatActivity implements OnMapReadyCa
             requestLocationupdate();
         }
 
-        if (polylineOptions != null) {
-            if (sessionManager.getPaymentDone()) {
-                if (polyline != null) {
-                    polyline.remove();
-                }
-                polyline = googleMap.addPolyline(polylineOptions);
-                sessionManager.clearPaymentDone();
-            }
-        }
     }
 
     @SuppressWarnings("MissingPermission")

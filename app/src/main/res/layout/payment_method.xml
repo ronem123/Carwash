@@ -3,10 +3,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/_10sdp"
-    android:paddingLeft="@dimen/_5sdp"
-    android:paddingRight="@dimen/_5sdp"
-    android:paddingTop="@dimen/_10sdp">
+    android:paddingBottom="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="10dp">
 
     <ImageView
         android:id="@+id/checkbox"

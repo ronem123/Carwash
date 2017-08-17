@@ -55,12 +55,12 @@ import com.ronem.carwash.adapters.NavAdapter;
 import com.ronem.carwash.model.DeliveredStationLocation;
 import com.ronem.carwash.model.NavItem;
 import com.ronem.carwash.utils.BasicUtilityMethods;
-import com.ronem.carwash.utils.DistanceCalculator;
 import com.ronem.carwash.utils.ItemDividerDecoration;
 import com.ronem.carwash.utils.MetaData;
 import com.ronem.carwash.utils.RecyclerItemClickListener;
 import com.ronem.carwash.utils.SessionManager;
-import com.ronem.carwash.view.LoginRegisterActivity;
+import com.ronem.carwash.view.UserTypeSelectionActivity;
+import com.ronem.carwash.view.login.LoginRegisterCustomerActivity;
 import com.ronem.carwash.view.MyDialog;
 import com.ronem.carwash.view.delivered.DeliveredActivity;
 import com.ronem.carwash.view.editprofile.EditProfileActivity;
@@ -75,7 +75,7 @@ import butterknife.ButterKnife;
  * Created by ram on 8/1/17.
  */
 
-public class Dashboard extends AppCompatActivity
+public class CustomerDashboard extends AppCompatActivity
         implements RecyclerItemClickListener.OnItemClickListener,
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -110,6 +110,8 @@ public class Dashboard extends AppCompatActivity
     private PolylineOptions polylineOptions;
     private Polyline polyline;
     private SessionManager sessionManager;
+    private String userType;
+    private boolean isCameraAnimated = false;
 
 
     @Override
@@ -118,6 +120,7 @@ public class Dashboard extends AppCompatActivity
         setContentView(R.layout.dashboard);
         ButterKnife.bind(this);
         sessionManager = new SessionManager(this);
+        userType = sessionManager.getUserType();
         settingToolbar();
         setUpNavigationMenu();
 
@@ -197,7 +200,7 @@ public class Dashboard extends AppCompatActivity
                         break;
                     case R.id.delivered_layout:
                         drawerLayout.closeDrawer(GravityCompat.START);
-                        startActivity(new Intent(Dashboard.this, DeliveredActivity.class));
+                        startActivity(new Intent(CustomerDashboard.this, DeliveredActivity.class));
                         break;
                     case R.id.station_layout:
                         drawerLayout.closeDrawer(GravityCompat.START);
@@ -214,7 +217,7 @@ public class Dashboard extends AppCompatActivity
         /**
          * setting the navigation items to the navigation view
          */
-        items = MetaData.getnavItems();
+        items = MetaData.getnavItems(userType);
         RecyclerView navRecyclerView = (RecyclerView) navigationView.findViewById(R.id.nav_recycler_view);
         navRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         navRecyclerView.addItemDecoration(new ItemDividerDecoration(this, null));
@@ -232,23 +235,23 @@ public class Dashboard extends AppCompatActivity
         contactTv.setText(sContact);
     }
 
-
     @Override
     public void onItemClick(RecyclerView recyclerView, View view, int position) {
         drawerLayout.closeDrawer(GravityCompat.START);
-        switch (position) {
-            case 0:
-                startActivity(new Intent(Dashboard.this, OrderActivity.class));
+        NavItem ni = items[position];
+        switch (ni.getTitle()) {
+            case MetaData.ITEM_ORDERS:
+                startActivity(new Intent(CustomerDashboard.this, OrderActivity.class));
                 break;
-            case 1:
+            case MetaData.ITEM_NOTIFICATIONS:
                 Toast.makeText(getApplicationContext(), "Under construction", Toast.LENGTH_SHORT).show();
                 break;
-            case 2:
-                startActivity(new Intent(Dashboard.this, EditProfileActivity.class));
+            case MetaData.ITEM_EDIT_PROFILE:
+                startActivity(new Intent(CustomerDashboard.this, EditProfileActivity.class));
                 break;
-            case 3:
+            case MetaData.ITEM_LOG_OUT:
                 sessionManager.logOut();
-                Intent i = new Intent(Dashboard.this, LoginRegisterActivity.class);
+                Intent i = new Intent(CustomerDashboard.this, UserTypeSelectionActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
                 break;
@@ -288,10 +291,13 @@ public class Dashboard extends AppCompatActivity
             mPositionMarker.setTag(-1);
         }
 
-        animateMarker(mPositionMarker, myLocation); // Helper method for smooth
-        // animation
+        if(!isCameraAnimated) {
+            animateMarker(mPositionMarker, myLocation); // Helper method for smooth
+            // animation
 
-        googleMap.animateCamera(CameraUpdateFactory.newLatLng(myLatlang));
+            googleMap.animateCamera(CameraUpdateFactory.newLatLng(myLatlang));
+            isCameraAnimated = true;
+        }
     }
 
     @Override
@@ -311,7 +317,7 @@ public class Dashboard extends AppCompatActivity
         }
 
         googleMap.setMyLocationEnabled(false);
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(MetaData.MAP_ZOOM));
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -325,7 +331,7 @@ public class Dashboard extends AppCompatActivity
                     } else {
                         String url = BasicUtilityMethods.getUrl(myLatlang, destinationLatlang);
                         Log.i("URL::", url);
-                        if (BasicUtilityMethods.isNetworkOnline(Dashboard.this)) {
+                        if (BasicUtilityMethods.isNetworkOnline(CustomerDashboard.this)) {
                             for (DeliveredStationLocation d : stationLocations) {
                                 if (d.getlId() == tag) {
                                     stationLocation = d;
@@ -398,8 +404,8 @@ public class Dashboard extends AppCompatActivity
     }
 
     @Override
-    public void onPolyLineOptionReceived(PolylineOptions polylineOptions,String distance,String duration) {
-        MyDialog d = new MyDialog(Dashboard.this, distance, duration, stationLocation, MetaData.ORDER_TYPE_STATION);
+    public void onPolyLineOptionReceived(PolylineOptions polylineOptions, String distance, String duration) {
+        MyDialog d = new MyDialog(CustomerDashboard.this, distance, duration, stationLocation, MetaData.ORDER_TYPE_STATION);
         d.show();
         this.polylineOptions = polylineOptions;
     }

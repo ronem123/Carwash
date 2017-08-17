@@ -64,6 +64,35 @@ public class BasicUtilityMethods {
         }
     }
 
+    public static boolean isGPSEnabled(Context context) {
+        LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static void openGPSSettingDialog(final Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("GPS alert");
+        builder.setMessage("You need to enable GPS setting first");
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+
+                Intent gpsIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                gpsIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(gpsIntent);
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.setCancelable(false);
+        alertDialog.show();
+    }
+
     public static LocationRequest createLocationRequest() {
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(5000);
@@ -97,6 +126,7 @@ public class BasicUtilityMethods {
 
         return url;
     }
+
     /**
      * A method to download json data from url
      */
@@ -137,5 +167,6 @@ public class BasicUtilityMethods {
         }
         return data;
     }
+
 
 }

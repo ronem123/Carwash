@@ -40,7 +40,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderViewHolder> {
         holder.vehicleTypeView.setText(context.getString(R.string.vehicle_type_s,o.getCarType()));
         holder.serviceTypeView.setText(context.getString(R.string.service_type_s,o.getService()));
         holder.paymentMethodView.setText(o.getPaymentMethod());
-        holder.payedAmountView.setText(o.getPayedAmount());
+        holder.payedAmountView.setText(context.getString(R.string.payed_amount,o.getPayedAmount()+" SR"));
 
     }
 
